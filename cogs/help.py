@@ -53,6 +53,10 @@ class Help(commands.Cog):
                                               "\n\nAdd 'tajweed' to the end for a page with color-coded tajweed rules."
                                               f"\nExample: `{prefix}mushaf 1:1 tajweed`")
 
+            em.add_field(name=f"{prefix}random", inline=True, value="View a random verse from Quran."
+
+                                              f"\n\n`{prefix}random verse`")
+
             # em.add_field(name="`settranslation`", inline=True, value="Changes the default translation for -quran."
             #                                   "\n\n__Usage__"
             #                                   "\n\n`{prefix}settranslation [translation]`"
