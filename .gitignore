@@ -1,0 +1,17 @@
+config.ini
+.env
+prefixes.json
+
+__pycache__
+.vscode
+others
+bot-env
+
+Tafsir.md
+Tafsir_copy.md
+translations.txt
+Translations.md
+
+installreq.sh
+makereq.sh
+venv.sh
