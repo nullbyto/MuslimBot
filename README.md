@@ -1,7 +1,7 @@
 # MuslimBot
 Discord Bot with Quran player and Islamic utilities
 
-### Credits
+# Credits
 Credits and Copyright goes to [galacticwarrior9](https://github.com/galacticwarrior9) for his good work on both [IslamBot](https://github.com/galacticwarrior9/IslamBot) and [Iqra](https://github.com/galacticwarrior9/Iqra)
 
 <details>
@@ -20,4 +20,4 @@ Conditions for using:
 - Credits given
 - Code made open-source
 
-More info will be added!
+# More info will be added!
