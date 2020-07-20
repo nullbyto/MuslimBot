@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json
+from cogs.topgg import TopGG
 
 class Events(commands.Cog):
     def __init__(self, bot):
@@ -16,6 +17,11 @@ class Events(commands.Cog):
         
         raise error
 
+    
+    @commands.Cog.listener()
+    async def on_guild_join(self, guild):
+        await TopGG.dblpy.post_guild_count()
+
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
         with open('prefixes.json', 'r') as file:
@@ -25,6 +31,13 @@ class Events(commands.Cog):
 
         with open('prefixes.json', 'w') as file:
             json.dump(prefixes, file, indent=4)
+        
+        await TopGG.dblpy.post_guild_count()
+        
+    @commands.Cog.listener()
+    async def on_guild_post(self):
+        print("Server count posted successfully!")
+    
 
 
 
