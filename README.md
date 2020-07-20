@@ -12,6 +12,7 @@ Credits and Copyright goes to [galacticwarrior9](https://github.com/galacticwarr
     - Added change prefix feature
     - Added reload command for reloading cogs for bot owner
     - Made all external link lists as command in the bot like: translationlist
+    - Error handling
 </details>
 
 MuslimBot is licensed under the [GNU GPL v3.0](https://github.com/nullbyto/MuslimBot/blob/master/LICENSE).
