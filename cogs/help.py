@@ -144,8 +144,8 @@ class Help(commands.Cog):
                                                                     f"\n**Playing a page from the mushaf**\n`{prefix}play page [page number] [reciter]`"
                                                                     f"\n\nFor more info: `{prefix}help play`")
             em.add_field(name=f"{prefix}live", inline=False, value="plays live audio either from Makkah or online Qur'an radio."
-                                                                    f"`{prefix}live [makkah / quran radio]`")
-            em.add_field(name=f"{prefix}search", inline=False, value="search the reciter list for `qplay` command\n"
+                                                                    f"`{prefix}live [makkah / quran radio / alharamayn]` or choose from 1/2/3.")
+            em.add_field(name=f"{prefix}search", inline=False, value="search the reciter list for `play` command\n"
                                                                      f"`{prefix}search [reciter name]`")
             em.add_field(name=f"{prefix}pause", inline=False, value="pauses the audio")
             em.add_field(name=f"{prefix}resume", inline=False, value="resume the audio")

@@ -94,6 +94,7 @@ class Audio(commands.Cog):
         self.page_url = 'https://everyayah.com/data/{}/PageMp3s/Page{}.mp3'
         self.ayah_url = 'https://everyayah.com/data/{}/{}.mp3'
         self.mushaf_url = 'https://www.searchtruth.org/quran/images1/{}.jpg'
+        self.radio3_url = 'http://212.32.255.144:9300/stream.mp3'
 
     def make_ayah_url(self, surah, ayah, reciter):
         url_surah = str(surah).zfill(3)
@@ -303,15 +304,21 @@ class Audio(commands.Cog):
 
         link = link.lower()
 
-        if link == 'quran radio':
+        if link == 'quran radio' or link == 'quran' or link == '1':
             player = await YTDLSource.from_url(self.quranradio_url, loop=self.bot.loop, stream=True)
             ctx.voice_client.play(player)
             await ctx.send("Now playing **mp3quran.net radio** (الإذاعة العامة - اذاعة متنوعة لمختلف القراء).")
 
-        elif link == 'makkah':
+        elif link == 'makkah' or link == '2':
             player = await YTDLSource.from_url(self.makkah_url, loop=self.bot.loop, stream=True)
             ctx.voice_client.play(player)
             await ctx.send("Now playing **Makkah Live** (قناة القرآن الكريم- بث مباشر).")
+        
+        elif link == 'alharamayn' or link == '3':
+            player = await YTDLSource.from_url(self.radio3_url, loop=self.bot.loop, stream=True)
+            ctx.voice_client.play(player)
+            await ctx.send("Now playing **Alharamayn Voice net Live** (إذاعة صوت الحرمين للقرآن الكريم - بث مباشر).")
+
 
     @commands.command(name="volume", enabled=False)
     async def volume(self, ctx, volume: int):
