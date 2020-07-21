@@ -147,7 +147,10 @@ class Help(commands.Cog):
                                                                     f"`{prefix}live [makkah / quran radio]`")
             em.add_field(name=f"{prefix}search", inline=False, value="search the reciter list for `qplay` command\n"
                                                                      f"`{prefix}search [reciter name]`")
+            em.add_field(name=f"{prefix}pause", inline=False, value="pauses the audio")
+            em.add_field(name=f"{prefix}resume", inline=False, value="resume the audio")
             em.add_field(name=f"{prefix}stop", inline=False, value="stops audio and disconnects the bot from voice chat")
+            em.add_field(name=f"{prefix}leave", inline=False, value="disconnects the bot from voice chat")
             # em.add_field(name=f"{prefix}volume", inline=False, value="changes the volume of the bot\n"
             #                                                            f"`{prefix}volume [volume]`. volume must be between 1 and 100")
             await ctx.send(embed=em)
