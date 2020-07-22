@@ -15,8 +15,7 @@ DEFAULT_PREFIX = '+'
 
 description = "A Discord bot with Quran player and Islamic utilities."
 
-# HELLLOOOOOOOOOOOOO Add 'topgg'
-cog_list = ['reciters', 'audio', 'admin', 'events', 'general', 'quran', 'hadith', 'hijricalendar',
+cog_list = ['topgg', 'reciters', 'audio', 'admin', 'events', 'general', 'quran', 'hadith', 'hijricalendar',
             'prayertimes', 'quran-morphology', 'tafsir', 'tafsir-english', 'mushaf', 'dua', 'help']
 
 
