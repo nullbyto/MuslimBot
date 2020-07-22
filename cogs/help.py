@@ -161,6 +161,8 @@ class Help(commands.Cog):
             em.add_field(name=f"{prefix}userinfo", inline=False, value="Shows all general info about the user, can be used with mention."
                                                                        
                                                                        f"\n\n`{prefix}userinfo`\n`{prefix}userinfo [@user]`")
+                                                                       
+            await ctx.send(embed=em)
             
 
     # Specific help pages
