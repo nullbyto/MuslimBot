@@ -138,7 +138,7 @@ Sends the list of available dua topics for `+dua`.
 allows you to get duas from *Fortress of the Muslim* (Hisn al-Muslim). 
 
 ```
-+dua [dua topic from -dualist]
++dua [dua topic]
 ```
 
 For example, to get duas for breaking fasts:
@@ -183,7 +183,7 @@ Alternatively, you can simply type the sunnah.com link in chat. The bot will the
 | 40 Hadith Qudsi | `qudsi ` | English, Arabic
 | 40 Hadith Nawawi | `nawawi ` | English, Arabic
 
-40 Hadith Qudsi and Nawawi are only forty hadith long and therefore only need a hadith number. For example: `-hadith qudsi 32`
+40 Hadith Qudsi and Nawawi are only forty hadith long and therefore only need a hadith number. For example: `+hadith qudsi 32`
 
 
 #### +ahadith
@@ -283,7 +283,7 @@ This would play Hatem Farid's recitation of Surah al-Baqarah, ayah 255.
 #### Playing a single page from the mushaf
 
 ```
--qplay page [page number] [optional reciter]
++play page [page number] [optional reciter]
 ```
 `[page]` must be between 1 and 604.
 If no reciter is specified, Mishary al-Afasy's recitation will be used.
@@ -295,17 +295,15 @@ This would play Hani al-Rifai's recitation of the 10th page of a standard *musha
 ### +reciters
 Gets the lists of reciters for `+play`.
 
-There are two lists. One is for surah recitations, and the other is for ayah/page recitations. [Click here for the list of **surah** reciters.](https://github.com/galacticwarrior9/QuranBot/blob/master/Reciters.md)
+There are two lists. One is for surah recitations, and the other is for ayah/page recitations. [Click here for the list of **surah** reciters.](https://github.com/nullbyto/MuslimBot/blob/master/Reciters.md)
 #### +search
-Use 	`+search` to search the list of reciters for `+play`. For example, `+search dossary` would return Ibrahim al-Dossary and Yasser al-Dossary.
+Use `+search` to search the list of reciters for `+play`. For example, `+search dossary` would return Ibrahim al-Dossary and Yasser al-Dossary.
 
 ### +live
 Plays a live audio stream.
 
- - Type `-qlive makkah` foMuslimBot is licensed under the [GNU GPL v3.0](https://github.com/nullbyto/MuslimBot/blob/master/LICENSE).
-Conditions for using:
-- Credits given
-- Code made open-source Qur'an radio.
+- Type `+live makkah` for a stream from al-Masjid al-Ḥarām in Makkah.
+- Type `+live quran` for Qur'an radio.
 
 ### +pause
 Pauses the audio.
