@@ -15,5 +15,7 @@ Translations.md
 installreq.sh
 makereq.sh
 venv.sh
+start.sh
+run.sh
 
 screenlog.0
