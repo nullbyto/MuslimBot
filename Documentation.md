@@ -1,11 +1,34 @@
 # Documentation
 
+## General Commands
+
+### +prefix
+You can use this command to change the server's prefix for the bot. (Server's owner only)
+**To get server's current prefix:**
+```
++prefix
+```
+**To change server's current prefix:**
+```
++prefix [prefix]
+
+```
+**For example:** `+prefix ++`
+
+### +userinfo
+Sends your user information in the channel.
+**You can check other user's info by mentioning them:**
+```
++userinfo [@user]
+```
+**For example:** `+userinfo @MuslimBot`
+
 ## Islamic Features
 
 ### Quran
 
 #### +quran
-**+quran** allows you to quote verses from the Qur'an. You can optionally specify a translation (see **Valid Translations** below). If you do not, the bot will send the verses in English.
+allows you to quote verses from the Qur'an. You can optionally specify a translation (see **Valid Translations** below). If you do not, the bot will send the verses in English.
 
 **To get a single verse:**
 ```
@@ -32,7 +55,7 @@ The above command would quote Surah 1, Verses 1-7 (Surah al-Fatihah) using the t
 
 
 #### +aquran
-**+aquran** functions exactly like  **+quran**, but sends the verses in Arabic.
+functions exactly like  **+quran**, but sends the verses in Arabic.
 
 For example, to quote the first verse of the Qur'an:
 ```
@@ -40,7 +63,7 @@ For example, to quote the first verse of the Qur'an:
 ```
 
 #### +morphology
-**+morphology** allows you to analyse the Arabic morphology of any word in the Qur'an.
+allows you to analyse the Arabic morphology of any word in the Qur'an.
 
 ```
 +morphology [surah]:[verse]:[word number]
@@ -54,7 +77,7 @@ The above would analyse the morphology of the 4th word of the 2nd verse of the 1
 
 
 #### +mushaf
-**+mushaf** sends the page containing a Qur'anic verse on a standard mushaf.
+sends the page containing a Qur'anic verse on a standard mushaf.
 ```
 +mushaf [surah]:[verse]
 ```
@@ -76,7 +99,7 @@ For example:
 ### Tafsir (Commentaries on the Qur'an) 
 
 #### +atafsir
-**+atafsir** allows you to quote from over 37 Arabic *tafaseer* (commentaries on the Qurʾān). A list of valid *tafaseer* is available [here](https://github.com/galacticwarrior9/islambot/blob/master/Tafsir.md).
+allows you to quote from over 37 Arabic *tafaseer* (commentaries on the Qurʾān). A list of valid *tafaseer* is available [here](https://github.com/galacticwarrior9/islambot/blob/master/Tafsir.md).
 
 ```
 +atafsir [surah]:[verse] [tafsir]
@@ -92,7 +115,7 @@ The above command would quote the tafsir of Ayatul Kursi from Tafsir al-Tabari.
 
 
 #### +tafsir
-**+tafsir** allows you to quote the English tasfir (commentary) of verses from Tafsīr al-Jalālayn (`jalalayn`), Tafsīr Ibn Kathīr (`ibnkathir`), Tafsīr al-Tustarī (`tustari`), Rashīd al-Dīn Maybudī's Kashf al-Asrār (`kashf`), al-Qurayshi's Laṭāʾif al-Ishārāt (`qurayshi`), Tafsīr ʿAbd al-Razzāq al-Kāshānī (`kashani`) and al-Wahidi's Asbāb al-Nuzūl (`wahidi`). It works in the same manner as **+atafsir**.
+allows you to quote the English tasfir (commentary) of verses from Tafsīr al-Jalālayn (`jalalayn`), Tafsīr Ibn Kathīr (`ibnkathir`), Tafsīr al-Tustarī (`tustari`), Rashīd al-Dīn Maybudī's Kashf al-Asrār (`kashf`), al-Qurayshi's Laṭāʾif al-Ishārāt (`qurayshi`), Tafsīr ʿAbd al-Razzāq al-Kāshānī (`kashani`) and al-Wahidi's Asbāb al-Nuzūl (`wahidi`). It works in the same manner as **+atafsir**.
 
 ```
 +tafsir [surah]:[verse] [jalalayn/ibnkathir/kashf/tustari/qurayshi/kashani/wahidi]
@@ -112,7 +135,7 @@ Sends the list of available dua topics for `+dua`.
 
 
 #### +dua
-**+dua** allows you to get duas from *Fortress of the Muslim* (Hisn al-Muslim). 
+allows you to get duas from *Fortress of the Muslim* (Hisn al-Muslim). 
 
 ```
 +dua [dua topic from -dualist]
@@ -127,7 +150,7 @@ For example, to get duas for breaking fasts:
 ### Hadith 
 
 #### +hadith
-**+hadith** allows you to quote hadith from sunnah.com in English.
+allows you to quote hadith from sunnah.com in English.
 
 ```
 +hadith [hadith collection name] [book number]:[hadith number]
@@ -164,10 +187,10 @@ Alternatively, you can simply type the sunnah.com link in chat. The bot will the
 
 
 #### +ahadith
-**+ahadith** is the same as -hadith, but sends the hadith in Arabic.
+is the same as **+hadith**, but sends the hadith in Arabic.
 
 #### +uhadith
-**+uhadith** is the same as -hadith, but sends the hadith in Urdu. Only Sahih al-Bukhari and Sunan Abu Dawud are available in Urdu.
+is the same as **+hadith**, but sends the hadith in Urdu. Only Sahih al-Bukhari and Sunan Abu Dawud are available in Urdu.
 
 
 ### Prayer (Salaah) Times
@@ -224,7 +247,7 @@ Gets a random verse from quran
 ## Quran Audio
 
 ### +play
-`-qplay`  instructs the bot to play a recitation of a surah, ayah or page from the Qur'an. 
+instructs the bot to play a recitation of a surah, ayah or page from the Qur'an. 
 #### Playing a surah
 ```
 +play [surah number] [optional reciter]
@@ -279,8 +302,10 @@ Use 	`+search` to search the list of reciters for `+play`. For example, `+search
 ### +live
 Plays a live audio stream.
 
- - Type `-qlive makkah` for a stream from al-Masjid al-Ḥarām in Makkah.
--  Type `-qlive quran` for Qur'an radio.
+ - Type `-qlive makkah` foMuslimBot is licensed under the [GNU GPL v3.0](https://github.com/nullbyto/MuslimBot/blob/master/LICENSE).
+Conditions for using:
+- Credits given
+- Code made open-source Qur'an radio.
 
 ### +pause
 Pauses the audio.
