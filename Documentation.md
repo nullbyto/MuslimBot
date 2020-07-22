@@ -4,6 +4,7 @@
 
 ### +prefix
 You can use this command to change the server's prefix for the bot. (Server's owner only)
+
 **To get server's current prefix:**
 ```
 +prefix
@@ -11,7 +12,6 @@ You can use this command to change the server's prefix for the bot. (Server's ow
 **To change server's current prefix:**
 ```
 +prefix [prefix]
-
 ```
 **For example:** `+prefix ++`
 
