@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import json
+from cogs.utils import get_prefix
 
 def is_guild_owner(ctx):
     return ctx.author.id == ctx.guild.owner.id
@@ -11,16 +12,20 @@ class General(commands.Cog):
 
     @commands.command()
     @commands.check(is_guild_owner)
-    async def prefix(self, ctx, prefix):
-        with open('prefixes.json', 'r') as file:
-            prefixes = json.load(file)
+    async def prefix(self, ctx, prefix = None):
+        if prefix is None:
+            await ctx.send(f"Server's current prefix is: `{get_prefix(ctx)}`")
 
-        prefixes[str(ctx.guild.id)] = prefix
+        else:    
+            with open('prefixes.json', 'r') as file:
+                prefixes = json.load(file)
 
-        with open('prefixes.json', 'w') as file:
-           json.dump(prefixes, file, indent=4)
+            prefixes[str(ctx.guild.id)] = prefix
 
-        await ctx.send(f"Server's Prefix changed to `{prefix}`")    
+            with open('prefixes.json', 'w') as file:
+                json.dump(prefixes, file, indent=4)
+
+            await ctx.send(f"Server's Prefix changed to `{prefix}`")    
 
 
     @commands.command()

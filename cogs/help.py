@@ -14,18 +14,21 @@ class Help(commands.Cog):
         prefix = get_prefix(ctx)
         section = section.lower()
 
+    # Main help page menu
         if section == "main":
             em = discord.Embed(title='\U0001F91DHello! Im MuslimBot!', colour=0x1f8b4c, description=f"Type `{prefix}help [category | number]` to post its commands here e.g.: `{prefix}help prayer times`")
-            em.add_field(name="***Categories***", value='\n0. Audio\n1. Quran\n2. Hadith\n3. Tafsir\n4. Prayer Times\n5. Dua\n6. Calendar',
+            em.add_field(name="***Categories***", value='\n0. Audio\n1. Quran\n2. Hadith\n3. Tafsir\n4. Prayer Times\n5. Dua\n6. Calendar\n7. General',
                          inline=False)
             em.add_field(name="***Links***", value="• **[Vote](https://top.gg/bot/574979234578300948/vote)**\n"
-                                             # "• [GitHub](https://github.com/amind0/muslimbot)\n"
-                                             "• **[Documentation](https://muslimbot.ga/documentation)**\n"
+                                                   "• **[GitHub](https://github.com/nullbyto/muslimbot)**\n"
+                                                   "• **[Documentation](https://github.com/nullbyto/MuslimBot/blob/master/Documentation.md)**\n"
                          , inline=False)
             em.add_field(name="***Support***", value="Join **https://discord.gg/ar9ksAy** and post in the support section")
             em.set_footer(text="Have a nice day!")
             await ctx.send(embed=em)
 
+
+    # Categories pages
         elif section == "quran" or section == "1":
             em = discord.Embed(title="Quran", colour=0x1f8b4c, description=f'Available translations: `{prefix}translationlist`')
             em.add_field(name=f"{prefix}quran", inline=True, value="Gets Quranic verses."
@@ -56,12 +59,6 @@ class Help(commands.Cog):
             em.add_field(name=f"{prefix}random", inline=True, value="View a random verse from Quran."
 
                                               f"\n\n`{prefix}random verse`")
-
-            # em.add_field(name="`settranslation`", inline=True, value="Changes the default translation for -quran."
-            #                                   "\n\n__Usage__"
-            #                                   "\n\n`{prefix}settranslation [translation]`"
-            #                                   "\n\nExample: `{prefix}settranslation khattab`"
-            #                                   "\n\nYou must have the **Administrator** permission to use this command.")
 
             await ctx.send(embed=em)
 
@@ -155,6 +152,18 @@ class Help(commands.Cog):
             #                                                            f"`{prefix}volume [volume]`. volume must be between 1 and 100")
             await ctx.send(embed=em)
 
+        elif section == "general" or section == "7":
+            em = discord.Embed(title="General", colour=0x1f8b4c, description=f'General purpose commands.')
+            em.add_field(name=f"{prefix}prefix", inline=False, value="Changes server's prefix for the bot.(Server's owner only)"
+           
+                                                         f"\n\n`{prefix}prefix` shows current prefix"
+                                                         f"\n`{prefix}prefix [prefix]`\nExample: `{prefix}prefix ++`")
+            em.add_field(name=f"{prefix}userinfo", inline=False, value="Shows all general info about the user, can be used with mention."
+                                                                       
+                                                                       f"\n\n`{prefix}userinfo`\n`{prefix}userinfo [@user]`")
+            
+
+    # Specific help pages
         elif section == "play":
             em = discord.Embed(colour=0x1f8b4c, title='`play` Command')
             em.add_field(value=f"**{prefix}play** plays a surah, ayah or page from the mushaf in a voice channel."
