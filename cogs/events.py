@@ -8,6 +8,7 @@ from cogs.utils import get_prefix
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.topgg = TopGG()
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
@@ -37,7 +38,9 @@ class Events(commands.Cog):
                 break
 
         # Post guild count to TopGG
-        await TopGG.dblpy.post_guild_count()
+        
+        await self.topgg.dblpy.post_guild_count()
+
 
     @commands.Cog.listener()
     async def on_guild_remove(self, guild):
@@ -49,7 +52,7 @@ class Events(commands.Cog):
         with open('prefixes.json', 'w') as file:
             json.dump(prefixes, file, indent=4)
         
-        await TopGG.dblpy.post_guild_count()
+        await self.topgg.dblpy.post_guild_count()
     
     
 
