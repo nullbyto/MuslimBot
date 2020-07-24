@@ -8,7 +8,7 @@ from cogs.utils import get_prefix
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.topgg = TopGG()
+        self.topgg = TopGG(bot)
 
     @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
