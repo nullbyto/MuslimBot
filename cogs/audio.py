@@ -147,9 +147,6 @@ class Audio(commands.Cog):
 
     @commands.group()
     async def play(self, ctx):
-        if ctx.voice_client.is_paused():
-            ctx.voice_client.resume()
-
         if ctx.invoked_subcommand is None:
             return await ctx.send('**Invalid arguments**. For help, type `{}help play`.'.format(get_prefix(ctx)))
 
