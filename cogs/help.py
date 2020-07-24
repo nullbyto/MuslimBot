@@ -16,7 +16,7 @@ class Help(commands.Cog):
 
     # Main help page menu
         if section == "main":
-            em = discord.Embed(title='\U0001F91DHello! Im MuslimBot!', colour=0x1f8b4c, description=f"Type `{prefix}help [category | number]` to post its commands here e.g.: `{prefix}help prayer times`")
+            em = discord.Embed(title='\U0001F91D Hello! Im MuslimBot!', colour=0x1f8b4c, description=f"Type `{prefix}help [category | number]` to post its commands here e.g.: `{prefix}help prayer times`")
             em.add_field(name="***Categories***", value='\n0. Audio\n1. Quran\n2. Hadith\n3. Tafsir\n4. Prayer Times\n5. Dua\n6. Calendar\n7. General',
                          inline=False)
             em.add_field(name="***Links***", value="• **[Vote](https://top.gg/bot/574979234578300948/vote)**\n"

@@ -99,7 +99,9 @@ For example:
 ### Tafsir (Commentaries on the Qur'an) 
 
 #### +atafsir
-allows you to quote from over 37 Arabic *tafaseer* (commentaries on the Qurʾān). A list of valid *tafaseer* is available [here](https://github.com/galacticwarrior9/islambot/blob/master/Tafsir.md).
+allows you to quote from over 37 Arabic *tafaseer* (commentaries on the Qurʾān). A list of valid *tafaseer* is available:
+
+`+tafsirlist`
 
 ```
 +atafsir [surah]:[verse] [tafsir]
