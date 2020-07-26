@@ -107,7 +107,7 @@ class Reciters(commands.Cog):
         em = discord.Embed(description=f'\n\n**`{prefix}play surah` Reciters**\n\nAvailable reciters: '
                                        f'**{mp3quran_reciters}\n\n'
                                        f'[Click here for the full surah reciter list]'
-                                       f'(https://github.com/galacticwarrior9/QuranBot/blob/master/Reciters.md)**\n\n'
+                                       f'(https://github.com/nullbyto/MuslimBot/blob/master/Reciters.md)**\n\n'
                                        f'To search this list, type `{prefix}search [reciter name]`, e.g. '
                                        f'`{prefix}search dossary`\n'
                                        f'\n\n**`{prefix}play ayah` and `{prefix}play page` Reciters**'
