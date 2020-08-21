@@ -2,6 +2,7 @@ import discord
 import asyncio
 import youtube_dl
 import aiohttp
+from discord.ext.commands import MissingRequiredArgument
 from discord.ext import commands
 from fuzzywuzzy import process, fuzz
 from cogs.utils import get_prefix
@@ -19,6 +20,7 @@ INVALID_VERSE = "**Please provide a verse.** For example, 1:2 is Surah al-Fatiha
 NON_EXISTENT_VERSE = "**There are only {} verses in this surah.**"
 ALREADY_PLAYING = "**Already playing**. To stop playing, type `{}stop`."
 NOT_PLAYING = "The bot is not playing."
+WRONG_COMMAND = "You typed the command wrongly. Type `{}help play` for help."
 
 players = {}
 
@@ -86,6 +88,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 class Audio(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.voice_states = {}
         self.session = aiohttp.ClientSession(loop=bot.loop)
         self.info_url = 'http://api.quran.com:3000/api/v3/chapters/{}'
         self.reciter_info_url = 'http://mp3quran.net/api/_english.php'
@@ -107,6 +110,12 @@ class Audio(commands.Cog):
         url = self.ayah_url.format(url_reciter, url_ref)
 
         return url
+
+
+    async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
+        await ctx.send(':x: **Error**: *{}*'.format(str(error)))
+        print(error)
+
 
     def make_page_url(self, page, reciter):
         try: url_reciter = everyayah_reciters[reciter]
@@ -145,16 +154,31 @@ class Audio(commands.Cog):
             em.set_image(url=image)
         return em
 
+
+    async def create_player(self, ctx, url):
+        try:
+            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
+        except:
+            return await ctx.send(RECITATION_NOT_FOUND)
+
+        self.voice_states[ctx.guild.id] = player
+
+        try:
+            ctx.voice_client.play(player, after=lambda x: asyncio.run_coroutine_threadsafe(ctx.voice_client.disconnect()
+                                                                                           , self.bot.loop))
+        except discord.errors.ClientException as e:
+            return print(e)
+
     @commands.group()
     async def play(self, ctx):
         if ctx.invoked_subcommand is None:
-            return await ctx.send('**Invalid arguments**. For help, type `{}help play`.'.format(get_prefix(ctx)))
+            await ctx.send('**Invalid arguments**. For help, type `{}help play`.'.format(get_prefix(ctx)))
 
     @play.command()
     async def surah(self, ctx, surah, *, reciter: str = 'Mishary Alafasi'):
 
-        if ctx.voice_client.is_playing():
-            return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
+        # if ctx.voice_client.is_playing():
+        #     return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
 
         try:
             surah = int(surah)
@@ -182,18 +206,7 @@ class Audio(commands.Cog):
 
         file_url = self.get_play_file(reciter.server, surah)
 
-        try:
-            player = await YTDLSource.from_url(file_url, loop=self.bot.loop, stream=True)
-        except:
-            return await ctx.send(RECITATION_NOT_FOUND)
-
-        players[ctx.guild.id] = player
-
-        try:
-            ctx.voice_client.play(player, after=lambda x: asyncio.run_coroutine_threadsafe(ctx.voice_client.disconnect()
-                                                                                           , self.bot.loop))
-        except discord.errors.ClientException as e:
-            return print(e)
+        await self.create_player(ctx, file_url)
 
         transliterated_surah, arabic_surah = await self.get_surah_info(surah)
         description = f'Playing **Surah {transliterated_surah}** ({arabic_surah}).\nReciter: **{reciter.name}**.' \
@@ -205,8 +218,8 @@ class Audio(commands.Cog):
     @play.command()
     async def ayah(self, ctx, ref: str, *, reciter: str = 'mishary al-afasy'):
 
-        if ctx.voice_client.is_playing():
-            return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
+        # if ctx.voice_client.is_playing():
+        #     return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
 
         try:
             surah, ayah = ref.split(':')
@@ -219,7 +232,7 @@ class Audio(commands.Cog):
 
         reciter = reciter.lower()
 
-        if reciter not in everyayah_reciters:
+        if reciter is None:
             return await ctx.send(RECITER_NOT_FOUND.format(get_prefix(ctx)))
 
         if not 0 < surah <= 114:
@@ -234,12 +247,7 @@ class Audio(commands.Cog):
         except:
             return await ctx.send(RECITATION_NOT_FOUND)
 
-        players[ctx.guild.id] = player
-        try:
-            ctx.voice_client.play(player, after=lambda x: asyncio.run_coroutine_threadsafe(ctx.voice_client.disconnect()
-                                                                                           , self.bot.loop))
-        except discord.errors.ClientException as e:
-            return print(e)
+        await self.create_player(ctx, url)
 
         reciter = reciter.replace('-', ' - ').title().replace(' - ', '-')
         transliterated_surah, arabic_surah = await self.get_surah_info(surah)
@@ -273,24 +281,20 @@ class Audio(commands.Cog):
 
         url, url_page = self.make_page_url(page, reciter)
 
-        try:
-            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-        except:
-            return await ctx.send(RECITATION_NOT_FOUND)
-
-        players[ctx.guild.id] = player
-        try:
-            ctx.voice_client.play(player, after=lambda x: asyncio.run_coroutine_threadsafe(ctx.voice_client.disconnect()
-                                                                                           , self.bot.loop))
-        except discord.errors.ClientException as e:
-            print(e)
-            return
+        await self.create_player(ctx, url)
 
         description = f'Playing **Page {page}.**\nReciter: **{readable_reciter}**.'
 
         em = self.make_embed("\U000025B6 Qurʼān", description, f'Requested by {ctx.message.author}', 0x006400,
                              f'https://www.searchtruth.org/quran/images2/large/page-{url_page}.jpeg')
         await ctx.send(embed=em)
+
+    @surah.error
+    @ayah.error
+    @page.error
+    async def error_handler(self, ctx, error):
+        if isinstance(error, MissingRequiredArgument):
+            await ctx.send(WRONG_COMMAND.format(get_prefix(ctx)))
 
 
     @commands.command()
@@ -326,18 +330,27 @@ class Audio(commands.Cog):
         ctx.voice_client.source.volume = volume / 100
         await ctx.send(f"Changed volume to **{volume}%**.")
 
-    @play.before_invoke
+    # @play.before_invoke
+    @ayah.before_invoke
+    @page.before_invoke
+    @surah.before_invoke
     @live.before_invoke
     async def join_voice(self, ctx):
-        if ctx.voice_client is None:
-            if ctx.author.voice:
-                await ctx.author.voice.channel.connect()
+        if not ctx.author.voice or not ctx.author.voice.channel:
+            raise commands.CommandError('You are not connected to any voice channel.')
+
+        elif ctx.voice_client:
+            if ctx.voice_client.channel != ctx.author.voice.channel:
+                raise commands.CommandError('Bot is already in a voice channel.')
             else:
-                await ctx.send("You are not connected to a voice channel.")
+                raise commands.CommandError('Bot is already playing.')
+
+        else:
+            await ctx.author.voice.channel.connect()
 
     # Leave empty voice channels to conserve bandwidth.
     @commands.Cog.listener()
-    async def on_voice_state_update(self, member, before, after):
+    async def on_voice_state_update(self, _, before, after):
         if after.channel is None:
             if len(before.channel.members) == 1 and self.bot.user in before.channel.members:
                 voice_client = discord.utils.get(self.bot.voice_clients, guild=before.channel.guild)
@@ -346,8 +359,9 @@ class Audio(commands.Cog):
 
     @commands.command()
     async def pause(self, ctx):
-        if ctx.voice_client.is_playing():
-            ctx.voice_client.pause()
+        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+        if voice_client is not None and voice_client.is_playing():
+            voice_client.pause()
             await ctx.message.add_reaction("\U000023F8")
         else:
             await ctx.send(NOT_PLAYING)
@@ -368,8 +382,9 @@ class Audio(commands.Cog):
     
     @commands.command()
     async def resume(self, ctx):
-        if ctx.voice_client.is_paused():
-            ctx.voice_client.resume()
+        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+        if voice_client is not None and voice_client.is_paused():
+            voice_client.resume()
             await ctx.message.add_reaction("\U000025B6")
         else:
             await ctx.send("Audio cannot be resumed!")
