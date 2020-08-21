@@ -15,8 +15,8 @@ class Events(commands.Cog):
         if isinstance(error, commands.DisabledCommand):
             await ctx.send('**This command is disabled!**')
 
-        if isinstance(error, commands.CommandNotFound):
-            await ctx.send('**This command does not exist!**')
+        # if isinstance(error, commands.CommandNotFound):
+        #     await ctx.send('**This command does not exist!**')
         
         raise error
 
