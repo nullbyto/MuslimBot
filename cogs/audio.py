@@ -321,7 +321,7 @@ class Audio(commands.Cog):
             await ctx.send("Now playing **Alharamayn Voice net Live** (إذاعة صوت الحرمين للقرآن الكريم - بث مباشر).")
 
 
-    @commands.command(name="volume", enabled=False)
+    @commands.command(name="volume", enabled=True)
     async def volume(self, ctx, volume: int):
         if not 0 <= volume <= 100:
             return await ctx.send(INVALID_VOLUME)
