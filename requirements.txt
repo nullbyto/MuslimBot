@@ -30,7 +30,7 @@ progress==1.5
 psutil==5.7.0
 pycairo==1.19.1
 pycparser==2.20
-Pygments==2.6.1
+Pygments==2.7.4
 PyNaCl==1.4.0
 pyparsing==2.4.7
 python-dotenv==0.13.0
