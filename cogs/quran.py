@@ -68,7 +68,7 @@ class Quran(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.session = aiohttp.ClientSession(loop=bot.loop)
-        self.quran_com_url = 'http://api.quran.com:3000/api/v3/chapters/{}/verses?translations={}&language=en&offset={' \
+        self.quran_com_url = 'http://api.quran.com/api/v3/chapters/{}/verses?translations={}&language=en&offset={' \
                              '}&limit={}&text_type=words'
         self.alquran_url = 'http://api.alquran.cloud/surah/{}/{}?offset={}&limit={}'
         self.arabic_url = 'http://api.alquran.cloud/surah/{}?offset={}&limit={}'

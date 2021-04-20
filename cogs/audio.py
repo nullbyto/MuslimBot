@@ -90,7 +90,7 @@ class Audio(commands.Cog):
         self.bot = bot
         self.voice_states = {}
         self.session = aiohttp.ClientSession(loop=bot.loop)
-        self.info_url = 'http://api.quran.com:3000/api/v3/chapters/{}'
+        self.info_url = 'http://api.quran.com/api/v3/chapters/{}'
         self.reciter_info_url = 'http://mp3quran.net/api/_english.php'
         self.makkah_url = 'http://66.226.10.51:8000/SaudiTVArabic?dl=1'
         self.quranradio_url = 'http://live.mp3quran.net:8006/stream?type=http&nocache=29554'
