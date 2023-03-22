@@ -4,14 +4,14 @@ import json
 from cogs.utils import get_prefix
 
 def is_guild_owner(ctx):
-    return ctx.author.id == ctx.guild.owner.id
+    return ctx.author == ctx.Guild.owner
 
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    @commands.check(is_guild_owner)
+    @commands.has_permissions(administrator = True)
     async def prefix(self, ctx, prefix = None):
         if prefix is None:
             await ctx.send(f"Server's current prefix is: `{get_prefix(ctx)}`")

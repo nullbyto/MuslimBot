@@ -32,7 +32,7 @@ def get_prefix(bot, message):
     prefix = prefixes[str(message.guild.id)]
     return commands.when_mentioned_or(prefix)(bot, message)
 
-bot = commands.AutoShardedBot(command_prefix=get_prefix, description=description)
+bot = commands.AutoShardedBot(command_prefix=get_prefix, description=description, intents=discord.Intents.default())
 bot.remove_command('help')
 
 @bot.event
