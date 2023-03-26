@@ -186,5 +186,5 @@ class TafsirEnglish(commands.Cog):
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(TafsirEnglish(bot))
+async def setup(bot):
+    await bot.add_cog(TafsirEnglish(bot))

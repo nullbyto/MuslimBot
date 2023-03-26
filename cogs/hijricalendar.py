@@ -81,5 +81,5 @@ class HijriCalendar(commands.Cog):
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(HijriCalendar(bot))
+async def setup(bot):
+    await bot.add_cog(HijriCalendar(bot))

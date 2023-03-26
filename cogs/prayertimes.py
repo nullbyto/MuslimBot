@@ -63,5 +63,5 @@ class PrayerTimes(commands.Cog):
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(PrayerTimes(bot))
+async def setup(bot):
+    await bot.add_cog(PrayerTimes(bot))

@@ -9,8 +9,8 @@ class Help(commands.Cog):
         self.bot = bot
 
 
-    @commands.command(name="help")
-    async def help(self, ctx, *, section: str = "main"):
+    @discord.app_commands.command(name="help", description="Display help menus")
+    async def help(self, ctx: discord.Interaction, *, section: str = "main"):
         prefix = get_prefix(ctx)
         section = section.lower()
 
@@ -25,7 +25,7 @@ class Help(commands.Cog):
                          , inline=False)
             em.add_field(name="***Support***", value="Join **https://discord.gg/ar9ksAy** and post in the support section")
             em.set_footer(text="Have a nice day!")
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
 
     # Categories pages
@@ -60,7 +60,7 @@ class Help(commands.Cog):
 
                                               f"\n\n`{prefix}random verse`")
 
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         elif section == "tafsir" or section == "3":
             em = discord.Embed(title="Tafsir", colour=0x1f8b4c, description=f'Available tafsirs: `{prefix}tafsirlist`')
@@ -77,7 +77,7 @@ class Help(commands.Cog):
                                               f"\n\nExample: `{prefix}atafsir 1:1`"
                                               f"\n\nExample 2: `{prefix}atafsir 1:1 ibnkathir`")
 
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         elif section == "calendar" or section == "6":
             em = discord.Embed(title="Hijri Calendar", colour=0x1f8b4c)
@@ -93,7 +93,7 @@ class Help(commands.Cog):
 
                                               f"\n\n`{prefix}convertfromhijri DD-MM-YYYY`"
                                               f"\n\nExample: `{prefix}convertfromhijri 12-03-1440`")
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         elif section == "hadith" or section == "2":
             em = discord.Embed(title="Hadith", colour=0x1f8b4c, description="These commands fetch hadith from *sunnah.com*.")
@@ -113,7 +113,7 @@ class Help(commands.Cog):
                                                             f"\n\n`{prefix}uhadith [collection] [book_number]:[hadith_number]`"
                                                             f"\n\nExample: `{prefix}uhadith bukhari 1:1` for http://sunnah.com/bukhari/1/1")
 
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         elif section == "prayer times" or section == "4" :
             em = discord.Embed(title="Prayer Times", colour=0x1f8b4c)
@@ -123,7 +123,7 @@ class Help(commands.Cog):
                                                                  f"\n\n`{prefix}prayertimes [location]`"
                                                                  f"\n\nExample: `{prefix}prayertimes London, UK`")
 
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         elif section == "dua" or section == "5":
             em = discord.Embed(title="Dua", colour=0x1f8b4c, description=f'Available duas: `{prefix}dualist`')
@@ -131,7 +131,7 @@ class Help(commands.Cog):
            
                                                          f"\n\n`{prefix}dua [topic]`"
                                                          f"\n\nExample: `{prefix}dua forgiveness`")
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         elif section == "audio" or section == "0":
             em = discord.Embed(title="Quranic Audio", colour=0x1f8b4c, description=f'Available Reciters: `{prefix}reciters`')
@@ -150,7 +150,7 @@ class Help(commands.Cog):
             em.add_field(name=f"{prefix}leave", inline=False, value="disconnects the bot from voice chat")
             # em.add_field(name=f"{prefix}volume", inline=False, value="changes the volume of the bot\n"
             #                                                            f"`{prefix}volume [volume]`. volume must be between 1 and 100")
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         elif section == "general" or section == "7":
             em = discord.Embed(title="General", colour=0x1f8b4c, description=f'General purpose commands.')
@@ -162,7 +162,7 @@ class Help(commands.Cog):
                                                                        
                                                                        f"\n\n`{prefix}userinfo`\n`{prefix}userinfo [@user]`")
                                                                        
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
             
 
     # Specific help pages
@@ -178,14 +178,13 @@ class Help(commands.Cog):
             em.add_field(value=f"`{prefix}play page [page number] [reciter]`\n\nExample: `{prefix}play page 342 hani al-rifai`"
                                , name='Playing a page from the mushaf', inline=False)
             em.add_field(value=f"Type `{prefix}reciters` for a list of reciters.", name='Reciters', inline=False)
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         else:
-            await ctx.send(f'**Invalid category, please choose one of the categories like this example:** `{prefix}help prayer times`')
-        
+            await ctx.response.send_message(f'**Invalid category, please choose one of the categories like this example:** `{prefix}help prayer times`')
 
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(Help(bot))
+async def setup(bot):
+    await bot.add_cog(Help(bot))

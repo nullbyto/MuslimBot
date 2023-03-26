@@ -48,5 +48,5 @@ class Mushaf(commands.Cog):
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(Mushaf(bot))
+async def setup(bot):
+    await bot.add_cog(Mushaf(bot))

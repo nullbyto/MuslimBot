@@ -39,7 +39,7 @@ class Events(commands.Cog):
 
         # Post guild count to TopGG
         
-        await self.topgg.dblpy.post_guild_count()
+        # await self.topgg.dblpy.post_guild_count()
 
 
     @commands.Cog.listener()
@@ -52,12 +52,12 @@ class Events(commands.Cog):
         with open('prefixes.json', 'w') as file:
             json.dump(prefixes, file, indent=4)
         
-        await self.topgg.dblpy.post_guild_count()
+        # await self.topgg.dblpy.post_guild_count()
     
     
 
 
 
-def setup(bot):
-    bot.add_cog(Events(bot))
+async def setup(bot):
+    await bot.add_cog(Events(bot))
 
