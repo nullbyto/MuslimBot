@@ -62,7 +62,7 @@ class Dua(commands.Cog):
 
         except KeyError:
             await ctx.response.send_message("Could not find dua for this.")
-            return await ctx.original_response()
+            return
 
         site_source = await get_site_source(self.url.format(dua_id))
         dua_text = []
@@ -81,7 +81,6 @@ class Dua(commands.Cog):
         em.set_author(name="Fortress of the Muslim (Hisnul Muslim)", icon_url=ICON)
 
         await ctx.response.send_message(embed=em)
-        await ctx.original_response()
 
     @discord.app_commands.command(name="dualist", description="Show available duas")
     async def dualist(self, ctx: discord.Interaction):
@@ -95,7 +94,6 @@ class Dua(commands.Cog):
         em.set_footer(text="Source: Fortress of the Muslim (Hisnul Muslim)")
 
         await ctx.response.send_message(embed=em)
-        await ctx.original_response()
 
 
 async def setup(bot):
