@@ -14,13 +14,14 @@ INVALID_ARGUMENTS = '**Invalid arguments!** Usage: `{0}prayertimes [location]`.\
 class PrayerTimes(commands.Cog):
 
     def __init__(self, bot):
-        self.session = ClientSession(loop = bot.loop)
+        self.session = ClientSession(loop=bot.loop)
         self.bot = bot
         self.hanafi_url = 'http://api.aladhan.com/timingsByAddress?address={0}&method=4&school=1'
         self.default_url = 'http://api.aladhan.com/timingsByAddress?address={0}&method=4&school=0'
 
+    #@discord.app_commands.command(name="prayertimes", description="Show prayer times in my location")
     @commands.command(name="prayertimes")
-    async def prayertimes(self, ctx, *, location):
+    async def prayertimes(self, ctx: discord.Interaction, *, location):
 
         try:
             # Open URL and parse JSON
@@ -56,10 +57,10 @@ class PrayerTimes(commands.Cog):
             em.add_field(name=f'**Isha (صلاة العشاء)**', value=f'{isha}', inline=True)
             em.add_field(name=f'**Midnight (منتصف الليل)**', value=f'{midnight}', inline=True)
             em.set_footer(text=f'Calculation Method: Umm al-Qura University')
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
         except:
-            await ctx.send(INVALID_ARGUMENTS.format(get_prefix(ctx)))
+            await ctx.response.send_message(INVALID_ARGUMENTS.format(get_prefix(ctx.original_response())))
 
 
 # Register as cog
