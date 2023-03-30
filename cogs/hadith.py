@@ -216,20 +216,23 @@ class Hadith(commands.Cog):
         self.bot = bot
         self.session = ClientSession(loop=bot.loop)
 
-    @commands.command(name='hadith')
-    async def hadith(self, ctx, collection_name: str = None, ref: str = None, page: int = 1):
+    #@commands.command(name='hadith')
+    @discord.app_commands.command(name="hadith", description="allow users to search the mp3quran.net reciter list")
+    async def hadith(self, ctx: discord.Interaction, collection_name: str = None, ref: str = None, page: int = 1):
         await self.abstract_hadith(ctx, collection_name, ref, "english", page)
 
-    @commands.command(name='ahadith')
-    async def ahadith(self, ctx, collection_name: str = None, ref: str = None, page: int = 1):
+    @discord.app_commands.command(name="ahadith", description="allow users to search the mp3quran.net reciter list")
+    #@commands.command(name='ahadith')
+    async def ahadith(self, ctx: discord.Interaction, collection_name: str = None, ref: str = None, page: int = 1):
         await self.abstract_hadith(ctx, collection_name, ref, "arabic", page)
 
-    @commands.command(name='uhadith')
-    async def uhadith(self, ctx, collection_name: str = None, ref: str = None, page: int = 1):
+    @discord.app_commands.command(name="uhadith", description="allow users to search the mp3quran.net reciter list")
+    #@commands.command(name='uhadith')
+    async def uhadith(self, ctx: discord.Interaction, collection_name: str = None, ref: str = None, page: int = 1):
         if self.isUrduAvailable(collection_name):
             await self.abstract_hadith(ctx, collection_name, ref, "urdu", page)
         else:
-            await ctx.send(NOT_AVAILABLE_URDU)
+            await ctx.response.send_message(NOT_AVAILABLE_URDU)
 
 
     @staticmethod
@@ -241,14 +244,15 @@ class Hadith(commands.Cog):
         if collection_name in HADITH_COLLECTION_LIST:
             spec = HadithSpecifics(collection_name, self.session, lang, ref, page)
         else:
-            return await channel.send(INVALID_INPUT.format(get_prefix(channel)))
+            return await channel.response.send_message(INVALID_INPUT.format(get_prefix(channel)))
 
         await spec.getHadith()
 
         if spec.hadith.hadithText:
 
             em = spec.makeEmbed()
-            msg = await channel.send(embed=em)
+            await channel.response.send_message(embed=em)
+            msg = await channel.original_response(self)
 
             if spec.num_pages > 1:
                 await msg.add_reaction(emoji='⬅')
@@ -280,13 +284,14 @@ class Hadith(commands.Cog):
                 await msg.edit(embed=em)
 
         else:
-            await channel.send(ERROR)
+            await channel.response.send_message(ERROR)
 
     def findURL(self, message):
         urls = re.findall(r'(https?://\S+)', message)
         for link in urls:
             if "sunnah.com/" in link:
                 return link
+
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -304,5 +309,5 @@ class Hadith(commands.Cog):
                 return
 
 
-def setup(bot):
-    bot.add_cog(Hadith(bot))
+async def setup(bot):
+    await bot.add_cog(Hadith(bot))

@@ -6,7 +6,7 @@ import json
 from dotenv import load_dotenv
 from discord.ext import commands
 
-__version__='1.0.0'
+__version__ = '1.0.0'
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -15,9 +15,12 @@ DEFAULT_PREFIX = '+'
 
 description = "A Discord bot with Quran player and Islamic utilities."
 
-cog_list = ['topgg', 'reciters', 'audio', 'admin', 'events', 'general', 'quran', 'hadith', 'hijricalendar',
+cog_list = [#'topgg', 'events',
+            'reciters', 'audio', 'admin',
+            'general', 'quran', 'hadith', 'hijricalendar',
             'prayertimes', 'quran-morphology', 'tafsir', 'tafsir-english', 'mushaf', 'dua', 'help']
 
+intents = discord.Intents.default()
 
 def get_prefix(bot, message):
     if not message.guild:
@@ -32,18 +35,19 @@ def get_prefix(bot, message):
     prefix = prefixes[str(message.guild.id)]
     return commands.when_mentioned_or(prefix)(bot, message)
 
-bot = commands.AutoShardedBot(command_prefix=get_prefix, description=description, intents=discord.Intents.default())
-bot.remove_command('help')
+bot = commands.AutoShardedBot(command_prefix=get_prefix, description=description, intents=intents)
 
 @bot.event
 async def on_ready():
     for cog in cog_list:
         cog = f'cogs.{cog}'
         try:
-            bot.load_extension(cog)
+            await bot.load_extension(cog)
         except Exception as e:
             print(f'Couldn\'t load cog {cog}')
             raise e
+    
+    await bot.tree.sync()
 
     print('------------------------')
     print(f'Logged in as {bot.user.name} (ID: {bot.user.id}) on {len(bot.guilds)} servers')
@@ -62,10 +66,10 @@ async def reload(ctx, cog=None):
             for item in cog_list:    
                 bot.unload_extension(f'cogs.{item}')
                 bot.load_extension(f'cogs.{item}')
-            await ctx.send(f'All cogs got reloaded.')
-            print(f'----------\nAll cogs got reloaded.\n----------')
+            await ctx.send('All cogs got reloaded.')
+            print('----------\nAll cogs got reloaded.\n----------')
         except Exception as e:
-            await ctx.send(f'Cogs can not be loaded!')
+            await ctx.send('Cogs can not be loaded!')
             raise e
 
     else:    

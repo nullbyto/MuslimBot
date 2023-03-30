@@ -92,7 +92,7 @@ class Audio(commands.Cog):
         self.session = aiohttp.ClientSession(loop=bot.loop)
         self.info_url = 'http://api.quran.com/api/v3/chapters/{}'
         self.reciter_info_url = 'http://mp3quran.net/api/_english.php'
-        self.makkah_url = 'http://66.226.10.51:8000/SaudiTVArabic?dl=1'
+        self.makkah_url = 'http://mediaserver2.islamicity.com:8000/SaudiTVArabic'
         self.quranradio_url = 'http://live.mp3quran.net:8006/stream?type=http&nocache=29554'
         self.page_url = 'https://everyayah.com/data/{}/PageMp3s/Page{}.mp3'
         self.ayah_url = 'https://everyayah.com/data/{}/{}.mp3'
@@ -296,29 +296,46 @@ class Audio(commands.Cog):
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(WRONG_COMMAND.format(get_prefix(ctx)))
 
+    async def join_ch(self, ctx: discord.Interaction):
+        voice = ctx.user.voice
+        voice_client = ctx.guild.voice_client
 
-    @commands.command()
-    async def live(self, ctx, *, link: str = 'makkah'):
+        if not voice or not voice.channel:
+            raise commands.CommandError('You are not connected to any voice channel.')
 
-        if ctx.voice_client.is_playing():
-            return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
+        elif voice_client:
+            if voice_client.channel != voice.channel:
+                raise commands.CommandError('Bot is already in a voice channel.')
+            else:
+                raise commands.CommandError('Bot is already playing.')
 
-        link = link.lower()
+        else:
+            return await voice.channel.connect()
 
-        if link == 'quran radio' or link == 'quran' or link == '1':
+    @discord.app_commands.command(name="live", description="Play live quran in voice channel")
+    async def live(self, ctx: discord.Interaction, *, channel: str = '1'):
+        voice_client = await self.join_ch(ctx)
+
+        # voice_client = ctx.guild.voice_client
+        if voice_client.is_playing():
+            return await ctx.response.send_message(ALREADY_PLAYING.format(get_prefix(ctx)))
+
+        channel = channel.lower()
+
+        if channel == 'quran radio' or channel == 'quran' or channel == '1':
             player = await YTDLSource.from_url(self.quranradio_url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player)
-            await ctx.send("Now playing **mp3quran.net radio** (الإذاعة العامة - اذاعة متنوعة لمختلف القراء).")
+            voice_client.play(player)
+            await ctx.response.send_message("Now playing **mp3quran.net radio** (الإذاعة العامة - اذاعة متنوعة لمختلف القراء).")
 
-        elif link == 'makkah' or link == '2':
+        elif channel == 'makkah' or channel == '2':
             player = await YTDLSource.from_url(self.makkah_url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player)
-            await ctx.send("Now playing **Makkah Live** (قناة القرآن الكريم- بث مباشر).")
+            voice_client.play(player)
+            await ctx.response.send_message("Now playing **Makkah Live** (قناة القرآن الكريم- بث مباشر).")
         
-        elif link == 'alharamayn' or link == '3':
+        elif channel == 'alharamayn' or channel == '3':
             player = await YTDLSource.from_url(self.radio3_url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player)
-            await ctx.send("Now playing **Alharamayn Voice net Live** (إذاعة صوت الحرمين للقرآن الكريم - بث مباشر).")
+            voice_client.play(player)
+            await ctx.response.send_message("Now playing **Alharamayn Voice net Live** (إذاعة صوت الحرمين للقرآن الكريم - بث مباشر).")
 
 
     @commands.command(name="volume", enabled=True)
@@ -334,7 +351,7 @@ class Audio(commands.Cog):
     @ayah.before_invoke
     @page.before_invoke
     @surah.before_invoke
-    @live.before_invoke
+    # @live.before_invoke
     async def join_voice(self, ctx):
         if not ctx.author.voice or not ctx.author.voice.channel:
             raise commands.CommandError('You are not connected to any voice channel.')
@@ -366,9 +383,9 @@ class Audio(commands.Cog):
         else:
             await ctx.send(NOT_PLAYING)
 
-    @commands.command()
-    async def join(self, ctx):
-        pass
+    # @commands.command()
+    # async def join(self, ctx):
+    #     pass
 
     @commands.command()
     async def leave(self, ctx):
@@ -389,14 +406,16 @@ class Audio(commands.Cog):
         else:
             await ctx.send("Audio cannot be resumed!")
 
-    @commands.command()
-    async def stop(self, ctx):
-        if ctx.voice_client.is_playing():
-            ctx.voice_client.stop()
+    @discord.app_commands.command()
+    async def stop(self, ctx: discord.Interaction):
+        guild = ctx.guild
+        voice_client = guild.voice_client
+        if voice_client.is_playing():
+            voice_client.stop()
             await ctx.message.add_reaction("\U000023F9")
         else:
             await ctx.send(NOT_PLAYING)
 
 
-def setup(bot):
-    bot.add_cog(Audio(bot))
+async def setup(bot):
+    await bot.add_cog(Audio(bot))

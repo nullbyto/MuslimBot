@@ -78,8 +78,10 @@ class Reciters(commands.Cog):
     '''
     Use fuzzy search to allow users to search the mp3quran.net reciter list.
     '''
-    @commands.command()
-    async def search(self, ctx, search_term: str):
+
+
+    @discord.app_commands.command(name="search", description="allow users to search the mp3quran.net reciter list")
+    async def search(self, ctx: discord.Interaction, search_term: str):
         reciter_list = await get_mp3quran_reciters()
         reciters = [reciter.name for reciter in reciter_list]
 
@@ -91,13 +93,13 @@ class Reciters(commands.Cog):
             formatted_result = result[0].replace('-', ' - ').title().replace(' - ', '-')
             formatted_results = formatted_results + f'\n{i}. {formatted_result}'
         if formatted_results == '':
-            await ctx.send('**No results.**')
+            await ctx.response.send_message('**No results.**')
         else:
             em = discord.Embed(title='\U0001F50D Search Results', colour=0x006400, description=formatted_results)
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
-    @commands.command(name='reciters')
-    async def reciters(self, ctx):
+    @discord.app_commands.command(name="reciters", description="Show a list of available reciters")
+    async def reciters(self, ctx: discord.Interaction):
         prefix = get_prefix(ctx)
 
         everyayah_reciter_list = ''
@@ -115,8 +117,8 @@ class Reciters(commands.Cog):
                                        f'List: ```{everyayah_reciter_list}```', colour=0x006400, title="Reciters")
         em.set_footer(text="Use the ayah/page reciter list when playing individual ayahs and pages. Use the surah recit"
                            "er list when playing surahs.")
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
 
-def setup(bot):
-    bot.add_cog(Reciters(bot))
+async def setup(bot):
+    await bot.add_cog(Reciters(bot))

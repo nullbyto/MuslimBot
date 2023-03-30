@@ -139,8 +139,8 @@ class TafsirEnglish(commands.Cog):
     async def send_embed(self, ctx, spec):
         msg = await ctx.send(embed=spec.embed)
         if spec.num_pages > 1:
-            await msg.add_reaction(emoji='⬅')
-            await msg.add_reaction(emoji='➡')
+            await msg.add_reaction('⬅')
+            await msg.add_reaction('➡')
 
         while True:
             try:
@@ -170,21 +170,22 @@ class TafsirEnglish(commands.Cog):
             except discord.ext.commands.errors.CommandInvokeError:
                 pass
 
-    @commands.command(name='tafsir')
-    async def tafsir(self, ctx, ref: str, tafsir: str = 'jalalayn', page: int = 1):
+    @discord.app_commands.command(name="tafsir",
+                                  description="Providing tafsir in english for Quran according to (jalalayn) author - author can be changed")  # aliases=["atafseer"]
+    async def tafsir(self, ctx: discord.Interaction, ref: str, tafsir: str = 'jalalayn', page: int = 1):
         try:
             spec = TafsirSpecifics(tafsir, ref, page)
         except KeyError:
-            return await ctx.send("**Invalid tafsir**.\nTafsirs: `ibnkathir`, `jalalayn`, `tustari`, `kashani`, `wahidi`, `qushayri`")
+            return await ctx.response.send_message("**Invalid tafsir**.\nTafsirs: `ibnkathir`, `jalalayn`, `tustari`, `kashani`, `wahidi`, `qushayri`")
         await spec.get_text(spec.tafsir)
         try:
             await spec.make_embed()
         except IndexError:
-            return await ctx.send("**Could not find tafsir for this verse.** Please try another tafsir.")
+            return await ctx.response.send_message("**Could not find tafsir for this verse.** Please try another tafsir.")
 
-        await self.send_embed(ctx, spec)
+        await self.send_embed(ctx.original_response(), spec)
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(TafsirEnglish(bot))
+async def setup(bot):
+    await bot.add_cog(TafsirEnglish(bot))
