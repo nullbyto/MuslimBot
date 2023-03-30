@@ -19,9 +19,8 @@ class PrayerTimes(commands.Cog):
         self.hanafi_url = 'http://api.aladhan.com/timingsByAddress?address={0}&method=4&school=1'
         self.default_url = 'http://api.aladhan.com/timingsByAddress?address={0}&method=4&school=0'
 
-    #@discord.app_commands.command(name="prayertimes", description="Show prayer times in my location")
-    @commands.command(name="prayertimes")
-    async def prayertimes(self, ctx: discord.Interaction, *, location):
+    @discord.app_commands.command(name="prayertimes", description="Show prayer times in my location")
+    async def prayertimes(self, ctx: discord.Interaction, *, location: str):
 
         try:
             # Open URL and parse JSON
