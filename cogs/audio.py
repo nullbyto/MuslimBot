@@ -113,7 +113,7 @@ class Audio(commands.Cog):
 
 
     async def cog_command_error(self, ctx: commands.Context, error: commands.CommandError):
-        await ctx.send(':x: **Error**: *{}*'.format(str(error)))
+        await ctx.response.send_message(':x: **Error**: *{}*'.format(str(error)))
         print(error)
 
 
@@ -155,11 +155,11 @@ class Audio(commands.Cog):
         return em
 
 
-    async def create_player(self, ctx, url):
+    async def create_player(self, ctx: discord.Interaction, url):
         try:
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
         except:
-            return await ctx.send(RECITATION_NOT_FOUND)
+            return await ctx.response.send_message(RECITATION_NOT_FOUND)
 
         self.voice_states[ctx.guild.id] = player
 
@@ -172,13 +172,13 @@ class Audio(commands.Cog):
     @commands.group()
     async def play(self, ctx):
         if ctx.invoked_subcommand is None:
-            await ctx.send('**Invalid arguments**. For help, type `{}help play`.'.format(get_prefix(ctx)))
+            await ctx.response.send_message('**Invalid arguments**. For help, type `{}help play`.'.format(get_prefix(ctx)))
 
     @play.command()
-    async def surah(self, ctx, surah, *, reciter: str = 'Mishary Alafasi'):
+    async def surah(self, ctx: discord.Interaction, surah, *, reciter: str = 'Mishary Alafasi'):
 
         # if ctx.voice_client.is_playing():
-        #     return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
+        #     return await ctx.response.send_message(ALREADY_PLAYING.format(get_prefix(ctx)))
 
         try:
             surah = int(surah)
@@ -191,18 +191,18 @@ class Audio(commands.Cog):
                 surah_names = await get_surah_names()
                 result = process.extract(surah, surah_names.keys(), scorer=fuzz.partial_ratio, limit=1)
                 if result is not None:
-                    await ctx.send(f'Could not find {surah}, so the closest match - *{result[0][0]}* - will be used.')
+                    await ctx.response.send_message(f'Could not find {surah}, so the closest match - *{result[0][0]}* - will be used.')
                     surah = await get_surah_id_from_name(result[0][0].lower())
                 else:
-                    return await ctx.send(SURAH_NOT_FOUND.format(get_prefix(ctx)))
+                    return await ctx.response.send_message(SURAH_NOT_FOUND.format(get_prefix(ctx)))
 
         reciter = await get_mp3quran_reciter(reciter.lower())
 
         if reciter is None:
-            return await ctx.send(RECITER_NOT_FOUND.format(get_prefix(ctx)))
+            return await ctx.response.send_message(RECITER_NOT_FOUND.format(get_prefix(ctx)))
 
         if not 0 < surah <= 114:
-            return await ctx.send(SURAH_NOT_FOUND.format(get_prefix(ctx)))
+            return await ctx.response.send_message(SURAH_NOT_FOUND.format(get_prefix(ctx)))
 
         file_url = self.get_play_file(reciter.server, surah)
 
@@ -213,13 +213,13 @@ class Audio(commands.Cog):
                       f'\nRiwayah: {reciter.riwayah}'
 
         em = self.make_embed("\U000025B6 Qurʼān", description, f'Requested by {ctx.message.author}', 0x006400)
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
     @play.command()
-    async def ayah(self, ctx, ref: str, *, reciter: str = 'mishary al-afasy'):
+    async def ayah(self, ctx: discord.Interaction, ref: str, *, reciter: str = 'mishary al-afasy'):
 
         # if ctx.voice_client.is_playing():
-        #     return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
+        #     return await ctx.response.send_message(ALREADY_PLAYING.format(get_prefix(ctx)))
 
         try:
             surah, ayah = ref.split(':')
@@ -227,25 +227,25 @@ class Audio(commands.Cog):
             ayah = int(ayah)
 
         except:
-            return await ctx.send("Invalid arguments. Commands: `{}play ayah [surah]:[ayah] [reciter]`."
+            return await ctx.response.send_message("Invalid arguments. Commands: `{}play ayah [surah]:[ayah] [reciter]`."
                                   "\n\nExample: `{}play ayah 2:255 abdul rahman al-sudais`.".format(get_prefix(ctx)))
 
         reciter = reciter.lower()
 
         if reciter is None:
-            return await ctx.send(RECITER_NOT_FOUND.format(get_prefix(ctx)))
+            return await ctx.response.send_message(RECITER_NOT_FOUND.format(get_prefix(ctx)))
 
         if not 0 < surah <= 114:
-            return await ctx.send(SURAH_NOT_FOUND.format(get_prefix(ctx)))
+            return await ctx.response.send_message(SURAH_NOT_FOUND.format(get_prefix(ctx)))
 
         verse_count = await self.get_verse_count(surah)
         if ayah > verse_count:
-            return await ctx.send(NON_EXISTENT_VERSE.format(verse_count))
+            return await ctx.response.send_message(NON_EXISTENT_VERSE.format(verse_count))
 
         url = self.make_ayah_url(surah, ayah, reciter)
         try: player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
         except:
-            return await ctx.send(RECITATION_NOT_FOUND)
+            return await ctx.response.send_message(RECITATION_NOT_FOUND)
 
         await self.create_player(ctx, url)
 
@@ -256,28 +256,28 @@ class Audio(commands.Cog):
 
         em = self.make_embed("\U000025B6 Qurʼān", description, f'Requested by {ctx.message.author}', 0x006400,
                              f'https://everyayah.com/data/QuranText_jpg/{surah}_{ayah}.jpg')
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
     @play.command()
-    async def page(self, ctx, page: int, *, reciter: str = 'mishary al-afasy'):
+    async def page(self, ctx: discord.Interaction, page: int, *, reciter: str = 'mishary al-afasy'):
 
         if ctx.voice_client.is_playing():
-            return await ctx.send(ALREADY_PLAYING.format(get_prefix(ctx)))
+            return await ctx.response.send_message(ALREADY_PLAYING.format(get_prefix(ctx)))
 
         try:
             page = int(page)
         except:
-            return await ctx.send("Invalid arguments. Commands: `{}page [page]:[ayah] [reciter]`."
+            return await ctx.response.send_message("Invalid arguments. Commands: `{}page [page]:[ayah] [reciter]`."
                                   "\n\nExample: `{}ayah 604 abdul rahman al-sudais`.".format(get_prefix(ctx)))
 
         reciter = reciter.lower()
         readable_reciter = reciter.replace('-', ' - ').title().replace(' - ', '-')
 
         if reciter not in everyayah_reciters:
-            return await ctx.send(RECITER_NOT_FOUND.format(get_prefix(ctx)))
+            return await ctx.response.send_message(RECITER_NOT_FOUND.format(get_prefix(ctx)))
 
         if not 0 < page <= 604:
-            return await ctx.send(PAGE_NOT_FOUND)
+            return await ctx.response.send_message(PAGE_NOT_FOUND)
 
         url, url_page = self.make_page_url(page, reciter)
 
@@ -287,14 +287,14 @@ class Audio(commands.Cog):
 
         em = self.make_embed("\U000025B6 Qurʼān", description, f'Requested by {ctx.message.author}', 0x006400,
                              f'https://www.searchtruth.org/quran/images2/large/page-{url_page}.jpeg')
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
     @surah.error
     @ayah.error
     @page.error
-    async def error_handler(self, ctx, error):
+    async def error_handler(self, ctx: discord.Interaction, error):
         if isinstance(error, MissingRequiredArgument):
-            await ctx.send(WRONG_COMMAND.format(get_prefix(ctx)))
+            await ctx.response.send_message(WRONG_COMMAND.format(get_prefix(ctx)))
 
     async def join_ch(self, ctx: discord.Interaction):
         voice = ctx.user.voice
@@ -339,13 +339,13 @@ class Audio(commands.Cog):
 
 
     @commands.command(name="volume", enabled=True)
-    async def volume(self, ctx, volume: int):
+    async def volume(self, ctx: discord.Interaction, volume: int):
         if not 0 <= volume <= 100:
-            return await ctx.send(INVALID_VOLUME)
+            return await ctx.response.send_message(INVALID_VOLUME)
         if ctx.voice_client is None:
-            return await ctx.send("Not connected to a voice channel.")
+            return await ctx.response.send_message("Not connected to a voice channel.")
         ctx.voice_client.source.volume = volume / 100
-        await ctx.send(f"Changed volume to **{volume}%**.")
+        await ctx.response.send_message(f"Changed volume to **{volume}%**.")
 
     # @play.before_invoke
     @ayah.before_invoke
@@ -374,39 +374,38 @@ class Audio(commands.Cog):
                 if voice_client is not None:
                     await voice_client.disconnect()
 
-    @commands.command()
-    async def pause(self, ctx):
-        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+    @discord.app_commands.command(name="pause", description="Pauses playing audio")
+    async def pause(self, ctx: discord.Interaction):
+        voice_client = discord.utils.get(ctx.client.voice_clients, guild=ctx.guild)
         if voice_client is not None and voice_client.is_playing():
             voice_client.pause()
-            await ctx.message.add_reaction("\U000023F8")
+            await ctx.response.send_message("⏸ Audio paused.")
         else:
-            await ctx.send(NOT_PLAYING)
+            await ctx.response.send_message(NOT_PLAYING)
 
     # @commands.command()
     # async def join(self, ctx):
     #     pass
 
-    @commands.command()
+    @discord.app_commands.command(name="leave", description="Leave voice channel if connected")
     async def leave(self, ctx):
-        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+        voice_client = discord.utils.get(ctx.client.voice_clients, guild=ctx.guild)
         if voice_client is not None:
             await voice_client.disconnect()
-            await ctx.message.add_reaction("\U0001F44B")
-            # await ctx.send(DISCONNECTED)
+            await ctx.response.send_message(DISCONNECTED)
         else:
-            await ctx.send(NOT_PLAYING)
+            await ctx.response.send_message(NOT_PLAYING)
     
-    @commands.command()
+    @discord.app_commands.command(name="resume", description="Resume playing audio")
     async def resume(self, ctx):
-        voice_client = discord.utils.get(ctx.bot.voice_clients, guild=ctx.guild)
+        voice_client = discord.utils.get(ctx.client.voice_clients, guild=ctx.guild)
         if voice_client is not None and voice_client.is_paused():
             voice_client.resume()
-            await ctx.message.add_reaction("\U000025B6")
+            await ctx.response.send_message("▶ Audio resumed.")
         else:
-            await ctx.send("Audio cannot be resumed!")
+            await ctx.response.send_message("Audio cannot be resumed!")
 
-    @discord.app_commands.command()
+    @discord.app_commands.command(name="stop", description="Stop playing audio")
     async def stop(self, ctx: discord.Interaction):
         guild = ctx.guild
         voice_client = guild.voice_client
@@ -414,7 +413,7 @@ class Audio(commands.Cog):
             voice_client.stop()
             await ctx.message.add_reaction("\U000023F9")
         else:
-            await ctx.send(NOT_PLAYING)
+            await ctx.response.send_message(NOT_PLAYING)
 
 
 async def setup(bot):
