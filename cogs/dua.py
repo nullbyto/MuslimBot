@@ -52,7 +52,6 @@ class Dua(commands.Cog):
         return self.duas[subject]
 
     @discord.app_commands.command(name="dua", description="get dua according to subject")
-    #@commands.command(name='dua')
     async def dua(self, ctx: discord.Interaction, *, subject: str):
 
         subject = subject.lower()
