@@ -17,18 +17,18 @@ class QuranMorphology(commands.Cog):
         self.morphologyURL = 'http://corpus.quran.com/wordmorphology.jsp?location=({}:{}:{})'
         self.syntaxURL = 'http://corpus.quran.com/treebank.jsp?chapter={}&verse={}&token={}'
 
-    @commands.command(name="morphology")
-    async def morphology(self, ctx, ref: str):
+    @discord.app_commands.command(name="morphology", description="Display morphology (Ii'rab)")
+    async def morphology(self, ctx: discord.Interaction, ref: str):
 
         if not self.isInCorrectFormat(ref):
-            await ctx.send(INVALID_ARGUMENTS.format(get_prefix(ctx)))
+            await ctx.response.send_message(INVALID_ARGUMENTS.format(get_prefix(ctx)))
             return
 
         try:
             surah, verse, word = ref.split(':')
 
         except:
-            await ctx.send(INVALID_ARGUMENTS.format(get_prefix(ctx)))
+            await ctx.response.send_message(INVALID_ARGUMENTS.format(get_prefix(ctx)))
             return
 
         wordSource = await get_site_source(self.morphologyURL.format(surah, verse, word))
@@ -55,7 +55,7 @@ class QuranMorphology(commands.Cog):
             em.set_thumbnail(url=wordImage)
         else:
             em.set_image(url=wordImage)
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
     def getWordImage(self, source):
         imageText = source.find("a", "tokenLink")
