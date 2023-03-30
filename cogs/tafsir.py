@@ -209,7 +209,6 @@ class Tafsir(commands.Cog):
 
     @discord.app_commands.command(name="tafsirlist",
                                   description="Show the list of Tafsir authors")
-    #@commands.command()
     async def tafsirlist(self,ctx: discord.Interaction):
         embed = discord.Embed(colour=0x048c28, title='**Tafsir list for `tafsir` command:**')
         embed.add_field(name='English', inline=False, value='```jalalayn, ibnkathir, tustari, qushayri'

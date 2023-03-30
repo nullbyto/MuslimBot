@@ -33,7 +33,7 @@ altafsir_url = 'https://www.altafsir.com/Tafasir.asp?tMadhNo=0&tTafsirNo={}&tSor
 
 ibnkathir_url = 'http://www.alim.org/library/quran/AlQuran-tafsir/TIK/{}/{}'
 
-jalalayn_url = 'https://raw.githubusercontent.com/galacticwarrior9/islambot/master/tafsir_jalalayn.txt'
+jalalayn_url = 'https://raw.githubusercontent.com/nullbyto/MuslimBot/master/tafsir_jalalayn.txt'
 
 
 class TafsirSpecifics:
@@ -136,8 +136,8 @@ class TafsirEnglish(commands.Cog):
         self.baseurl = 'https://www.altafsir.com/Tafasir.asp?tMadhNo=0&tTafsirNo={}&tSoraNo={}&tAyahNo={}&tDisplay=y' \
                        'es&Page={}&Size=1&LanguageId=2'
 
-    async def send_embed(self, ctx, spec):
-        msg = await ctx.send(embed=spec.embed)
+    async def send_embed(self, ctx: discord.Interaction, spec):
+        msg = await ctx.response.send_message(embed=spec.embed)
         if spec.num_pages > 1:
             await msg.add_reaction('⬅')
             await msg.add_reaction('➡')
@@ -183,7 +183,7 @@ class TafsirEnglish(commands.Cog):
         except IndexError:
             return await ctx.response.send_message("**Could not find tafsir for this verse.** Please try another tafsir.")
 
-        await self.send_embed(ctx.original_response(), spec)
+        await self.send_embed(ctx, spec)
 
 
 # Register as cog
