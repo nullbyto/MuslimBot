@@ -216,18 +216,15 @@ class Hadith(commands.Cog):
         self.bot = bot
         self.session = ClientSession(loop=bot.loop)
 
-    #@commands.command(name='hadith')
     @discord.app_commands.command(name="hadith", description="allow users to search the mp3quran.net reciter list")
     async def hadith(self, ctx: discord.Interaction, collection_name: str = None, ref: str = None, page: int = 1):
         await self.abstract_hadith(ctx, collection_name, ref, "english", page)
 
     @discord.app_commands.command(name="ahadith", description="allow users to search the mp3quran.net reciter list")
-    #@commands.command(name='ahadith')
     async def ahadith(self, ctx: discord.Interaction, collection_name: str = None, ref: str = None, page: int = 1):
         await self.abstract_hadith(ctx, collection_name, ref, "arabic", page)
 
     @discord.app_commands.command(name="uhadith", description="allow users to search the mp3quran.net reciter list")
-    #@commands.command(name='uhadith')
     async def uhadith(self, ctx: discord.Interaction, collection_name: str = None, ref: str = None, page: int = 1):
         if self.isUrduAvailable(collection_name):
             await self.abstract_hadith(ctx, collection_name, ref, "urdu", page)
@@ -252,7 +249,7 @@ class Hadith(commands.Cog):
 
             em = spec.makeEmbed()
             await channel.response.send_message(embed=em)
-            msg = await channel.original_response(self)
+            msg = await channel.original_response()
 
             if spec.num_pages > 1:
                 await msg.add_reaction(emoji='⬅')

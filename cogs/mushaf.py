@@ -18,7 +18,7 @@ class Mushaf(commands.Cog):
         self.bot = bot
         self.session = ClientSession(loop=bot.loop)
 
-    @commands.command(name="mushaf")
+    @discord.app_commands.command(name="mushaf", description="Displays the mushaf")
     async def mushaf(self, ctx, ref: str, tajweed : str = 'none'):
 
         try:
@@ -44,7 +44,7 @@ class Mushaf(commands.Cog):
                                  f'\n  الصفحة{arabic_page_number}', colour=0x006400)
         em.set_author(name=f'Mushaf / مصحف', icon_url=icon)
         em.set_image(url=url)
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
 
 # Register as cog
