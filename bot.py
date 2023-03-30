@@ -47,7 +47,8 @@ async def on_ready():
             print(f'Couldn\'t load cog {cog}')
             raise e
     
-    await bot.tree.sync()
+    commands_resp = await bot.tree.sync()
+    print(commands_resp)
 
     print('------------------------')
     print(f'Logged in as {bot.user.name} (ID: {bot.user.id}) on {len(bot.guilds)} servers')

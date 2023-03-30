@@ -44,28 +44,27 @@ def make_embed(**kwargs):
     """
 
     # Get the attributes from the user
-    Empty = Embed.Empty
-    if True:
-        # Get the author/title information
-        author = kwargs.get('author', Empty)
-        author_url = kwargs.get('author_url', Empty)
-        author_icon = kwargs.get('author_icon', Empty)
+    Empty = None
+    # Get the author/title information
+    author = kwargs.get('author', Empty)
+    author_url = kwargs.get('author_url', Empty)
+    author_icon = kwargs.get('author_icon', Empty)
 
-        # Get the colour
-        colour = kwargs.get('colour', 0)
+    # Get the colour
+    colour = kwargs.get('colour', 0)
 
-        # Get the values
-        fields = kwargs.get('fields', {})
-        inline = kwargs.get('inline', True)
-        description = kwargs.get('description', Empty)
+    # Get the values
+    fields = kwargs.get('fields', {})
+    inline = kwargs.get('inline', True)
+    description = kwargs.get('description', Empty)
 
-        # Footer
-        footer = kwargs.get('footer', Empty)
-        footer_icon = kwargs.get('footer_icon', Empty)
+    # Footer
+    footer = kwargs.get('footer', Empty)
+    footer_icon = kwargs.get('footer_icon', Empty)
 
-        # Images
-        thumbnail = kwargs.get('thumbnail', False)
-        image = kwargs.get('image', False)
+    # Images
+    thumbnail = kwargs.get('thumbnail', False)
+    image = kwargs.get('image', False)
 
     # Filter the colour into a usable form
     if type(colour).__name__ == 'Message':
