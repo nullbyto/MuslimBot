@@ -76,7 +76,7 @@ class HijriCalendar(commands.Cog):
     @tasks.loop(hours=1)
     async def update_hijri_date(self):
         hijri = self.get_current_hijri()
-        activity = discord.Activity(type= discord.ActivityType.listening, name=f"Quran | +help | {hijri}")
+        activity = discord.Activity(type= discord.ActivityType.listening, name=f"Quran | /help | {hijri}")
         await self.bot.change_presence(activity=activity)
 
 
