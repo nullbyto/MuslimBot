@@ -5,9 +5,10 @@ from bs4 import BeautifulSoup
 from discord import Embed
 
 
-DEFAULT_PREFIX = '+'
+DEFAULT_PREFIX = '/'
 
 def get_prefix(ctx=None):
+    return DEFAULT_PREFIX
     if ctx==None:
         return DEFAULT_PREFIX
 

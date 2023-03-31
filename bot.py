@@ -11,7 +11,7 @@ __version__ = '1.0.0'
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-DEFAULT_PREFIX = '+'
+DEFAULT_PREFIX = '/'
 
 description = "A Discord bot with Quran player and Islamic utilities."
 
