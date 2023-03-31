@@ -4,17 +4,17 @@ import json
 from cogs.utils import get_prefix
 
 def is_guild_owner(ctx):
-    return ctx.author.id == ctx.guild.owner.id
+    return ctx.author == ctx.Guild.owner
 
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    @commands.check(is_guild_owner)
-    async def prefix(self, ctx, prefix = None):
+    @discord.app_commands.command(name="prefix")
+    @commands.has_permissions(administrator = True)
+    async def prefix(self, ctx, prefix: str = None):
         if prefix is None:
-            await ctx.send(f"Server's current prefix is: `{get_prefix(ctx)}`")
+            await ctx.response.send_message(f"Server's current prefix is: `{get_prefix(ctx)}`")
 
         else:    
             with open('prefixes.json', 'r') as file:
@@ -25,19 +25,19 @@ class General(commands.Cog):
             with open('prefixes.json', 'w') as file:
                 json.dump(prefixes, file, indent=4)
 
-            await ctx.send(f"Server's Prefix changed to `{prefix}`")    
+            await ctx.response.send_message(f"Server's Prefix changed to `{prefix}`")    
 
 
-    @commands.command()
-    async def userinfo(self, ctx, member: discord.Member = None):
-        member = ctx.author if not member else member
+    @discord.app_commands.command(name="userinfo", description="Displays info about the user mentioned")
+    async def userinfo(self, ctx: discord.Interaction, member: discord.Member):
+        member = ctx.message.author if not member else member
         roles = [role for role in member.roles]
 
         embed = discord.Embed(colour=member.color, timestamp=ctx.message.created_at)
 
         embed.set_author(name=f'User Info - {member}')
-        embed.set_thumbnail(url=member.avatar_url)
-        embed.set_footer(text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
+        embed.set_thumbnail(url=member.avatar)
+        embed.set_footer(text=f'Requested by {ctx.message.author}', icon_url=ctx.message.author.avatar)
 
         embed.add_field(name='ID:', value=member.id)
         embed.add_field(name='Name in Guild:', value=member.display_name)
@@ -50,8 +50,8 @@ class General(commands.Cog):
 
         embed.add_field(name='Bot?', value=member.bot)
 
-        await ctx.send(embed=embed)
+        await ctx.response.send_message(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(General(bot))
+async def setup(bot):
+    await bot.add_cog(General(bot))

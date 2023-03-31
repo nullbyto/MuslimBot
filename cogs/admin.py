@@ -9,9 +9,9 @@ class Admin(commands.Cog):
         self.bot = bot
         self.start_time = time.time()
 
-    @commands.command()
+    @discord.app_commands.command()
     @commands.is_owner()
-    async def botinfo(self, ctx):
+    async def botinfo(self, ctx: discord.Interaction):
         current_time = time.time()
         channels = len(set(self.bot.get_all_channels()))
         difference = int(round(current_time - self.start_time))
@@ -30,8 +30,8 @@ class Admin(commands.Cog):
                                                              f"Available RAM: {round(psutil.virtual_memory().available * 100 / psutil.virtual_memory().total)}%\n"
                                                              f"Ping: {round(self.bot.latency * 1000)}ms\n"
                                                              f"Uptime: {uptime}\n")
-        await ctx.send(embed=embed)
+        await ctx.response.send_message(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Admin(bot))
+async def setup(bot):
+    await bot.add_cog(Admin(bot))

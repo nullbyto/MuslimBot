@@ -35,42 +35,42 @@ class HijriCalendar(commands.Cog):
         gregorian = convert.Hijri(hijri_date.year, hijri_date.month, hijri_date.day).to_gregorian()
         return f'{hijri_date.strftime("%d-%m-%Y")} AH is **{gregorian.strftime("%d %B %Y")}**'
 
-    @commands.command(name='hijridate')
-    async def hijridate(self, ctx):
+    @discord.app_commands.command(name='hijridate', description="Display todays hijri date")
+    async def hijridate(self, ctx: discord.Interaction):
         hijri = self.get_current_hijri()
         today = date.today()
         em = make_embed(colour=0x72bcd4, author="Today's Hijri Date", description=hijri + f'\n{today}', author_icon=ICON)
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
-    @commands.command(name='converttohijri')
-    async def converttohijri(self, ctx, gregorian_date: str):
+    @discord.app_commands.command(name='converttohijri', description="Convert gregorian date to hijri date")
+    async def converttohijri(self, ctx: discord.Integration, gregorian_date: str):
         try:
             gregorian_date = datetime.strptime(gregorian_date, "%d-%m-%Y").date()
         except:
-            return await ctx.send(DATE_INVALID)
+            return await ctx.response.send_message(DATE_INVALID)
 
         try:
             hijri = self.get_hijri(gregorian_date=gregorian_date)
         except OverflowError:
-            return await ctx.send(GREGORIAN_DATE_OUT_OF_RANGE)
+            return await ctx.response.send_message(GREGORIAN_DATE_OUT_OF_RANGE)
 
         em = make_embed(colour=0x72bcd4, author="Gregorian → Hijri Conversion", description=hijri, author_icon=ICON)
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
-    @commands.command(name='convertfromhijri')
-    async def convertfromhijri(self, ctx, hijri_date: str):
+    @discord.app_commands.command(name='convertfromhijri', description="Convert hijri date to gregorian")
+    async def convertfromhijri(self, ctx: discord.Integration, hijri_date: str):
         try:
             hijri_date = datetime.strptime(hijri_date, "%d-%m-%Y").date()
         except:
-            return await ctx.send(DATE_INVALID)
+            return await ctx.response.send_message(DATE_INVALID)
 
         try:
             hijri = self.get_gregorian(hijri_date=hijri_date)
         except OverflowError:
-            return await ctx.send(HIJRI_DATE_OUT_OF_RANGE)
+            return await ctx.response.send_message(HIJRI_DATE_OUT_OF_RANGE)
 
         em = make_embed(colour=0x72bcd4, author="Hijri → Gregorian Conversion", description=hijri, author_icon=ICON)
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
     ## Bot Activity
     @tasks.loop(hours=1)
@@ -81,5 +81,5 @@ class HijriCalendar(commands.Cog):
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(HijriCalendar(bot))
+async def setup(bot):
+    await bot.add_cog(HijriCalendar(bot))

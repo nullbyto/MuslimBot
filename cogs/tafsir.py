@@ -182,8 +182,9 @@ class Tafsir(commands.Cog):
 
         return em
 
-    @commands.command(name="atafsir", aliases=["atafseer"])
-    async def atafsir(self, ctx, ref: str, tafsir: str = "tabari", page: int = 1):
+    @discord.app_commands.command(name="atafsir",
+                                  description="Providing tafsir for Quran according to (AlTabari) author - author can be changed")   #aliases=["atafseer"]
+    async def atafsir(self, ctx: discord.Interaction, ref: str, tafsir: str = "tabari", page: int = 1):
 
         surah, ayah = self.process_ref(ref)
 
@@ -196,18 +197,19 @@ class Tafsir(commands.Cog):
         try:
             text, num_pages, footer = self.process_text(content, page)
         except AttributeError:
-            return await ctx.send('***عفوا، لا مواد لهذه الآية في هذا الكتاب***')
+            return await ctx.response.send_message('***عفوا، لا مواد لهذه الآية في هذا الكتاب***')
 
         em = self.make_embed(text, page, tafsir_name, surah, ayah, footer, formatted_url, num_pages)
 
-        msg = await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
+        msg = await ctx.original_response()
         if num_pages > 1:
-            await msg.add_reaction(emoji='⬅')
-            await msg.add_reaction(emoji='➡')
+            await msg.add_reaction('⬅')
+            await msg.add_reaction('➡')
 
-
-    @commands.command()
-    async def tafsirlist(self,ctx):
+    @discord.app_commands.command(name="tafsirlist",
+                                  description="Show the list of Tafsir authors")
+    async def tafsirlist(self,ctx: discord.Interaction):
         embed = discord.Embed(colour=0x048c28, title='**Tafsir list for `tafsir` command:**')
         embed.add_field(name='English', inline=False, value='```jalalayn, ibnkathir, tustari, qushayri'
         ', kashani, wahidi, kashf```')
@@ -215,7 +217,7 @@ class Tafsir(commands.Cog):
         ', thalabi, baghawi, qurtubi, baydawi, mawardi, suyuti, nasafi, samarqandi, shawkani, zamakhshari'
         ', saadi, razi, ibnaljawzi, ibnjuzayy, baqai, abuhayyan, ibnatiyah, ibnashur, muyassar, ibnuthaymeen'
         ', makki, abualsuod, ibnabihatim, thaalabi, zamanain, iji, qasimi, fathalbayan, alusi, jazaeri, mukhtasar, samaani, wahid```')
-        await ctx.send(embed=embed)
+        await ctx.response.send_message(embed=embed)
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
@@ -241,7 +243,7 @@ class Tafsir(commands.Cog):
 
             # If the reaction is the forward arrow, attempt to get the next page:
             if reaction.emoji == '➡':
-                await msg.remove_reaction(emoji="➡", member=user)
+                await msg.remove_reaction("➡", member=user)
                 new_page = page + 1
                 formatted_url = self.make_url(tafsir_id, surah, ayah)
                 content = str(await get_site_source(formatted_url))
@@ -254,13 +256,13 @@ class Tafsir(commands.Cog):
                 if new_page <= num_pages:
                     em = self.make_embed(text, new_page, arabic_name, surah, ayah, footer, formatted_url, num_pages)
                     await msg.edit(embed=em)
-                    await msg.add_reaction(emoji='⬅')
+                    await msg.add_reaction('⬅')
                     if new_page == num_pages:
-                        await msg.remove_reaction(emoji="➡", member=self.bot.user)
+                        await msg.remove_reaction("➡", member=self.bot.user)
 
             # If the reaction is the backwards arrow, attempt to get the previous page.
             elif reaction.emoji == '⬅':
-                await reaction.message.remove_reaction(emoji="⬅", member=user)
+                await reaction.message.remove_reaction("⬅", member=user)
                 new_page = page - 1
                 if new_page > 0:
                     formatted_url = self.make_url(tafsir_id, surah, ayah)
@@ -268,11 +270,11 @@ class Tafsir(commands.Cog):
                     text, num_pages, footer = self.process_text(content, new_page)
                     em = self.make_embed(text, new_page, arabic_name, surah, ayah, footer, formatted_url, num_pages)
                     await msg.edit(embed=em)
-                    await msg.add_reaction(emoji='➡')
+                    await msg.add_reaction('➡')
                     if new_page == 1:
-                        await msg.remove_reaction(emoji='⬅', member=self.bot.user)
+                        await msg.remove_reaction('⬅', member=self.bot.user)
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(Tafsir(bot))
+async def setup(bot):
+    await bot.add_cog(Tafsir(bot))

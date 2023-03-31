@@ -33,7 +33,7 @@ altafsir_url = 'https://www.altafsir.com/Tafasir.asp?tMadhNo=0&tTafsirNo={}&tSor
 
 ibnkathir_url = 'http://www.alim.org/library/quran/AlQuran-tafsir/TIK/{}/{}'
 
-jalalayn_url = 'https://raw.githubusercontent.com/galacticwarrior9/islambot/master/tafsir_jalalayn.txt'
+jalalayn_url = 'https://raw.githubusercontent.com/nullbyto/MuslimBot/master/tafsir_jalalayn.txt'
 
 
 class TafsirSpecifics:
@@ -136,11 +136,11 @@ class TafsirEnglish(commands.Cog):
         self.baseurl = 'https://www.altafsir.com/Tafasir.asp?tMadhNo=0&tTafsirNo={}&tSoraNo={}&tAyahNo={}&tDisplay=y' \
                        'es&Page={}&Size=1&LanguageId=2'
 
-    async def send_embed(self, ctx, spec):
-        msg = await ctx.send(embed=spec.embed)
+    async def send_embed(self, ctx: discord.Interaction, spec):
+        msg = await ctx.response.send_message(embed=spec.embed)
         if spec.num_pages > 1:
-            await msg.add_reaction(emoji='⬅')
-            await msg.add_reaction(emoji='➡')
+            await msg.add_reaction('⬅')
+            await msg.add_reaction('➡')
 
         while True:
             try:
@@ -170,21 +170,22 @@ class TafsirEnglish(commands.Cog):
             except discord.ext.commands.errors.CommandInvokeError:
                 pass
 
-    @commands.command(name='tafsir')
-    async def tafsir(self, ctx, ref: str, tafsir: str = 'jalalayn', page: int = 1):
+    @discord.app_commands.command(name="tafsir",
+                                  description="Providing tafsir in english for Quran according to (jalalayn) author - author can be changed")  # aliases=["atafseer"]
+    async def tafsir(self, ctx: discord.Interaction, ref: str, tafsir: str = 'jalalayn', page: int = 1):
         try:
             spec = TafsirSpecifics(tafsir, ref, page)
         except KeyError:
-            return await ctx.send("**Invalid tafsir**.\nTafsirs: `ibnkathir`, `jalalayn`, `tustari`, `kashani`, `wahidi`, `qushayri`")
+            return await ctx.response.send_message("**Invalid tafsir**.\nTafsirs: `ibnkathir`, `jalalayn`, `tustari`, `kashani`, `wahidi`, `qushayri`")
         await spec.get_text(spec.tafsir)
         try:
             await spec.make_embed()
         except IndexError:
-            return await ctx.send("**Could not find tafsir for this verse.** Please try another tafsir.")
+            return await ctx.response.send_message("**Could not find tafsir for this verse.** Please try another tafsir.")
 
         await self.send_embed(ctx, spec)
 
 
 # Register as cog
-def setup(bot):
-    bot.add_cog(TafsirEnglish(bot))
+async def setup(bot):
+    await bot.add_cog(TafsirEnglish(bot))

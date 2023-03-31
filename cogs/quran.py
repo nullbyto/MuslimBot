@@ -243,35 +243,35 @@ class Quran(commands.Cog):
 
     @commands.command(name="settranslation", enabled=False)
     @commands.has_permissions(administrator=True)
-    async def settranslation(self, ctx, translation: str):
+    async def settranslation(self, ctx: discord.Interaction, translation: str):
 
         if translation is None:
-            return await ctx.send(INVALID_TRANSLATION)
+            return await ctx.response.send_message(INVALID_TRANSLATION)
 
         try:
             self.format_edition(translation)
         except:
-            return await ctx.send(INVALID_TRANSLATION)
+            return await ctx.response.send_message(INVALID_TRANSLATION)
 
         try:
             await create_connection()
         except Exception as e:
             print(e)
-            return await ctx.send(DATABASE_UNREACHABLE)
+            return await ctx.response.send_message(DATABASE_UNREACHABLE)
 
         await update_guild_translation(ctx.guild.id, translation)
-        await ctx.send(f"**Successfully updated default translation to `{translation}`!**")
+        await ctx.response.send_message(f"**Successfully updated default translation to `{translation}`!**")
 
     @settranslation.error
-    async def settranslation_error(self, ctx, error):
+    async def settranslation_error(self, ctx: discord.Interaction, error):
         if isinstance(error, CheckFailure):
-            await ctx.send("You need the **Administrator** permission to use this command.")
+            await ctx.response.send_message("You need the **Administrator** permission to use this command.")
 
 
     # Should have edition: str = None to get the default_guild_set_translation to put it
     # I just modified it to have a default English edition = 'haleem'
-    @commands.command(name="quran", aliases=["Quran"])
-    async def quran(self, ctx, ref: str, edition: str = 'haleem'):
+    @discord.app_commands.command(name="quran", description="Read the quran in english")
+    async def quran(self, ctx: discord.Interaction, ref: str, edition: str = 'haleem'):
         async with ctx.channel.typing():
 
             # If no translation was specified, find a translation to use.
@@ -288,13 +288,13 @@ class Quran(commands.Cog):
                 try:
                     edition = self.format_edition(edition)
                 except KeyError:
-                    return await ctx.send(INVALID_TRANSLATION)
+                    return await ctx.response.send_message(INVALID_TRANSLATION)
 
             # Now fetch the verses:
             try:
                 spec = self.get_spec(ref, edition)
             except:
-                return await ctx.send(INVALID_ARGUMENTS_ENGLISH.format(get_prefix(ctx)))
+                return await ctx.response.send_message(INVALID_ARGUMENTS_ENGLISH.format(get_prefix(ctx)))
 
             surah_name, readable_edition, revelation_type = await self.get_metadata(spec, edition)
             translated_surah_name = await self.get_translated_surah_name(spec, edition)
@@ -311,16 +311,16 @@ class Quran(commands.Cog):
                                                                                     f' {revelation_type}')
 
             if len(em) > 6000:
-                return await ctx.send("This passage was too long to send.")
+                return await ctx.response.send_message("This passage was too long to send.")
 
-            await ctx.send(embed=em)
+            await ctx.response.send_message(embed=em)
 
-    @commands.command(name="aquran")
-    async def aquran(self, ctx, *, ref: str):
+    @discord.app_commands.command(name="aquran", description="Read the quran in arabic")
+    async def aquran(self, ctx: discord.Interaction, *, ref: str):
         try:
             spec = self.get_spec(ref)
         except:
-            return await ctx.send(INVALID_ARGUMENTS_ARABIC.format(get_prefix(ctx)))
+            return await ctx.response.send_message(INVALID_ARGUMENTS_ARABIC.format(get_prefix(ctx)))
 
         surah_name = await self.get_metadata(spec, edition='ar')
         await self.get_verses(spec)
@@ -329,9 +329,9 @@ class Quran(commands.Cog):
                         inline=False, footer="")
 
         if len(em) > 6000:
-            return await ctx.send("This passage was too long to send.")
+            return await ctx.response.send_message("This passage was too long to send.")
 
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
     @staticmethod
     def get_spec(ref, edition='ar'):
@@ -400,7 +400,7 @@ class Quran(commands.Cog):
             return data['chapter']['translated_name']['name']
 
 
-    @commands.command()
+    @discord.app_commands.command(name="translationlist", description="Get translation list")
     async def translationlist(self,ctx):
         with open('translations.txt') as f:
             lines = f.readlines()
@@ -409,7 +409,7 @@ class Quran(commands.Cog):
         embed = discord.Embed(colour=0x048c28, title='Translation list for `quran` command:')
         embed.add_field(name='★━━━━━━━━━━━━━━━━━━━━★', value=''.join(lines[0:34]))
         embed.add_field(name='★━━━━━━━━━━━━━━━━━━━━★', value=''.join(lines[34:68]))
-        msg = await ctx.send(embed=embed)
+        msg = await ctx.response.send_message(embed=embed)
         await msg.add_reaction(emoji='⬅')
         await msg.add_reaction(emoji='➡')
         while True:
@@ -450,10 +450,10 @@ class Quran(commands.Cog):
                 embed.add_field(name='★━━━━━━━━━━━━━━━━━━━━★', value=''.join(lines[34:68]))
                 await msg.edit(embed=embed)
             
-    @commands.command()
+    @discord.app_commands.command(name="random", description="Display random ayah from the quran")
     async def random(self, ctx , type: str = None):
         if type is None:
-            await ctx.send('Invalid Arguments, please choose a type. `{}random verse`'.format(get_prefix(ctx)))
+            await ctx.response.send_message('Invalid Arguments, please choose a type. `{}random verse`'.format(get_prefix(ctx)))
 
         elif type == 'verse':
             random_num = random.randint(1,6236)
@@ -469,8 +469,8 @@ class Quran(commands.Cog):
             embed = discord.Embed(title='Random Verse from Quran', author_icon=ICON, description=f'{name_ar}\n{name_eng} ({name_eng_tr})\n\n'
                                                                                                  f'{text_ar}\n{text_eng}')
             embed.set_footer(text=f"Arabic: {edition_ar} | English: {edition_eng}")
-            await ctx.send(embed=embed)
+            await ctx.response.send_message(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Quran(bot))
+async def setup(bot):
+    await bot.add_cog(Quran(bot))

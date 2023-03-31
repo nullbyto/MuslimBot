@@ -2,6 +2,7 @@ import discord
 import re
 from discord.ext import commands
 from cogs.utils import get_site_source, get_prefix
+from cogs.utils import get_prefix
 
 ICON = 'https://sunnah.com/images/hadith_icon2_huge.png'
 
@@ -50,8 +51,8 @@ class Dua(commands.Cog):
     def get_dua_id(self, subject):
         return self.duas[subject]
 
-    @commands.command(name='dua')
-    async def dua(self, ctx, *, subject: str):
+    @discord.app_commands.command(name="dua", description="get dua according to subject")
+    async def dua(self, ctx: discord.Interaction, *, subject: str):
 
         subject = subject.lower()
 
@@ -59,7 +60,8 @@ class Dua(commands.Cog):
             dua_id = self.get_dua_id(self, subject)
 
         except KeyError:
-            return await ctx.send("Could not find dua for this.")
+            await ctx.response.send_message("Could not find dua for this.")
+            return
 
         site_source = await get_site_source(self.url.format(dua_id))
         dua_text = []
@@ -77,10 +79,10 @@ class Dua(commands.Cog):
         em = discord.Embed(title=f'Duas for {subject.title()}', colour=0x467f05, description=dua_text)
         em.set_author(name="Fortress of the Muslim (Hisnul Muslim)", icon_url=ICON)
 
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
-    @commands.command(name='dualist')
-    async def dualist(self, ctx):
+    @discord.app_commands.command(name="dualist", description="Show available duas")
+    async def dualist(self, ctx: discord.Interaction):
         prefix = get_prefix(ctx)
         list = [f'**Type {prefix}dua [topic]**. Example: `{prefix}dua breaking fast`\n']
 
@@ -90,8 +92,8 @@ class Dua(commands.Cog):
         em = discord.Embed(title=f'Dua List', colour=0x467f05, description=''.join(list))
         em.set_footer(text="Source: Fortress of the Muslim (Hisnul Muslim)")
 
-        await ctx.send(embed=em)
+        await ctx.response.send_message(embed=em)
 
 
-def setup(bot):
-    bot.add_cog(Dua(bot))
+async def setup(bot):
+    await bot.add_cog(Dua(bot))
