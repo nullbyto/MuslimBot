@@ -29,7 +29,7 @@ pep517==0.8.2
 progress==1.5
 psutil==5.7.0
 pycparser==2.20
-Pygments==2.8.1
+Pygments==2.15.0
 PyNaCl==1.4.0
 pyparsing==2.4.6
 python-dotenv==0.13.0
